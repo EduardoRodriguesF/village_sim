@@ -8,10 +8,11 @@ mod prelude {
 }
 
 use prelude::*;
+use headless_transform::HeadlessPositionPlugin;
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
-        .add_plugin(HeadlessTransform)
+        .add_plugin(HeadlessPositionPlugin)
         .run();
 }
