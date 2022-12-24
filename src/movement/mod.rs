@@ -9,6 +9,6 @@ pub struct MovementPlugin;
 
 impl Plugin for MovementPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(apply_velocity);
+        app.add_system(apply_direction).add_system(apply_velocity);
     }
 }

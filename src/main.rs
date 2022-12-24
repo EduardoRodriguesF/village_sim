@@ -45,7 +45,10 @@ fn setup(mut commands: Commands) {
     });
 }
 
-fn camera_movement(keyboard_input: Res<Input<KeyCode>>, mut query: Query<&mut Transform, With<Camera>>) {
+fn camera_movement(
+    keyboard_input: Res<Input<KeyCode>>,
+    mut query: Query<&mut Transform, With<Camera>>,
+) {
     let mut transform = query.get_single_mut().unwrap();
 
     let pressed_right = keyboard_input.pressed(KeyCode::Right) as i32;
