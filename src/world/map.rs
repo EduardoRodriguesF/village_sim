@@ -17,6 +17,7 @@ pub struct Successor {
     pub cost: u32,
 }
 
+#[derive(Resource)]
 pub struct Map {
     pub width: u8,
     pub height: u8,
