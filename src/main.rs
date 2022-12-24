@@ -8,8 +8,8 @@ mod prelude {
     pub use bevy::prelude::*;
 
     pub const SCALE: f32 = 1.;
-    pub const SCREEN_WIDTH: i32 = 1000;
-    pub const SCREEN_HEIGHT: i32 = 602;
+    pub const SCREEN_WIDTH: i32 = 960;
+    pub const SCREEN_HEIGHT: i32 = 592;
 }
 
 use destinations::DestinationsPlugin;
