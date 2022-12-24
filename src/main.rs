@@ -1,3 +1,4 @@
+mod movement;
 mod headless_transform;
 mod world;
 
@@ -11,12 +12,14 @@ mod prelude {
 use headless_transform::HeadlessPositionPlugin;
 use prelude::*;
 use world::WorldPlugin;
+use movement::MovementPlugin;
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         .add_plugin(HeadlessPositionPlugin)
         .add_plugin(WorldPlugin)
+        .add_plugin(MovementPlugin)
         .add_startup_system(setup)
         .run();
 }
