@@ -1,5 +1,6 @@
-mod movement;
+mod destinations;
 mod headless_transform;
+mod movement;
 mod world;
 
 mod prelude {
@@ -9,10 +10,11 @@ mod prelude {
     pub const SCALE: f32 = 1.;
 }
 
+use destinations::DestinationsPlugin;
 use headless_transform::HeadlessPositionPlugin;
+use movement::MovementPlugin;
 use prelude::*;
 use world::WorldPlugin;
-use movement::MovementPlugin;
 
 fn main() {
     App::new()
@@ -20,6 +22,7 @@ fn main() {
         .add_plugin(HeadlessPositionPlugin)
         .add_plugin(WorldPlugin)
         .add_plugin(MovementPlugin)
+        .add_plugin(DestinationsPlugin)
         .add_startup_system(setup)
         .run();
 }
