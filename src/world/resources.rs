@@ -1,4 +1,4 @@
-use bevy::prelude::*;
+use super::prelude::*;
 use rand::prelude::*;
 
 #[derive(Resource, Debug)]

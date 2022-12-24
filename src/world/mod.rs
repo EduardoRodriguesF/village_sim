@@ -2,7 +2,6 @@ pub mod prelude;
 pub mod resources;
 mod systems;
 
-use bevy::prelude::*;
 use systems::*;
 use prelude::*;
 
