@@ -1,13 +1,9 @@
+pub mod prelude;
 pub mod resources;
 mod systems;
 
 use bevy::prelude::*;
 use systems::*;
-
-pub mod prelude {
-    pub use super::resources::*;
-}
-
 use prelude::*;
 
 pub struct WorldPlugin;
