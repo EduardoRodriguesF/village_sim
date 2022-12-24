@@ -104,8 +104,8 @@ impl Map {
 
 pub fn vec2_to_node(translation: &Vec2) -> MapNode {
     MapNode(
-        translation.x as i16 / TILE_SIZE as i16,
-        translation.y as i16 / TILE_SIZE as i16,
+        translation.x.round() as i16 / TILE_SIZE as i16,
+        translation.y.round() as i16 / TILE_SIZE as i16,
     )
 }
 
