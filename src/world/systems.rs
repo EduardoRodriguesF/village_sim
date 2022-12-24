@@ -25,3 +25,8 @@ pub fn setup(mut commands: Commands, mut seed: ResMut<Seed>) {
         ));
     }
 }
+
+#[cfg(debug_assertions)]
+pub fn initial_debug(seed: Res<Seed>) {
+    println!("Seed: {}", seed.key);
+}
