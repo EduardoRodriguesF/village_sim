@@ -1,4 +1,5 @@
 pub mod components;
+pub mod map;
 pub mod prelude;
 pub mod resources;
 mod systems;
