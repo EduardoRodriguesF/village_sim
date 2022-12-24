@@ -9,7 +9,7 @@ pub enum TerrainType {
 }
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone, Copy, PartialOrd)]
-pub struct MapNode(i16, i16);
+pub struct MapNode(pub i16, pub i16);
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, PartialOrd)]
 pub struct Successor {
