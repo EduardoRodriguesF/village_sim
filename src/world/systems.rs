@@ -1,14 +1,16 @@
+use super::prelude::*;
 use crate::prelude::*;
+use rand::prelude::*;
 
 const POSITION_OFFSET_MULTIPLIER: f32 = 300.;
 
-pub fn setup(mut commands: Commands) {
+pub fn setup(mut commands: Commands, mut seed: ResMut<Seed>) {
     for _ in 0..20 {
-        let r: f32 = rand::random();
-        let g: f32 = rand::random();
-        let b: f32 = rand::random();
-        let x_pos = rand::random::<f32>() * POSITION_OFFSET_MULTIPLIER;
-        let y_pos = rand::random::<f32>() * POSITION_OFFSET_MULTIPLIER;
+        let r: f32 = seed.rng.gen();
+        let g: f32 = seed.rng.gen();
+        let b: f32 = seed.rng.gen();
+        let x_pos = seed.rng.gen::<f32>() * POSITION_OFFSET_MULTIPLIER;
+        let y_pos = seed.rng.gen::<f32>() * POSITION_OFFSET_MULTIPLIER;
 
         commands.spawn((
             SpriteBundle {
