@@ -17,6 +17,7 @@ pub fn setup(mut commands: Commands, mut seed: ResMut<Seed>) {
                 sprite: Sprite {
                     color: Color::rgb(r, g, b),
                     rect: Some(Rect::new(0., 0., 16., 32.)),
+                    anchor: bevy::sprite::Anchor::BottomCenter,
                     ..default()
                 },
                 ..default()
