@@ -1,6 +1,6 @@
 use super::prelude::*;
 
 #[derive(Component)]
-pub struct PersonStats {
+pub struct NpcStats {
     pub speed: f32,
 }

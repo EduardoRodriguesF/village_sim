@@ -11,7 +11,7 @@ pub fn apply_velocity(mut query: Query<(&mut HeadlessTransform, &Velocity)>) {
 
 pub fn apply_direction(
     mut commands: Commands,
-    mut query: Query<(Entity, &MovementIntention, &PersonStats)>,
+    mut query: Query<(Entity, &MovementIntention, &NpcStats)>,
 ) {
     for (entity, delta, stats) in query.iter_mut() {
         let mut entity = commands.entity(entity);
