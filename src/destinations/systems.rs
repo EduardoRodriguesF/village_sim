@@ -1,6 +1,7 @@
 use super::prelude::*;
 use crate::headless_transform::components::*;
 use crate::movement::prelude::*;
+use crate::world::prelude::*;
 
 pub fn determine_instructions(
     mut commands: Commands,
@@ -36,9 +37,10 @@ pub fn follow_instructions(
         &mut InstructionsToDestination,
         &mut Velocity,
         &HeadlessTransform,
+        &PersonStats,
     )>,
 ) {
-    for (entity, mut instructions, mut velocity, transform) in query.iter_mut() {
+    for (entity, mut instructions, mut velocity, transform, stats) in query.iter_mut() {
         let mut entity = commands.entity(entity);
 
         if instructions.len() > 0 {
@@ -52,8 +54,8 @@ pub fn follow_instructions(
                     Vec2::new(transform.translation.x, transform.translation.y);
 
                 let dir = Vec2::normalize(next_instruction - current_translation);
-                velocity.x = dir.x;
-                velocity.y = dir.y;
+                velocity.x = dir.x * stats.speed;
+                velocity.y = dir.y * stats.speed;
             } else {
                 instructions.remove(0);
             }
