@@ -1,4 +1,3 @@
 pub use super::components::*;
-pub use super::map::*;
-pub use super::resources::*;
+pub use crate::world::map::*;
 pub use bevy::prelude::*;
