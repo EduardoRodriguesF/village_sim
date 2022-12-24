@@ -21,6 +21,9 @@ pub fn setup(mut commands: Commands, mut seed: ResMut<Seed>) {
                 },
                 ..default()
             },
+            PersonStats {
+                speed: seed.rng.gen_range(1.0..1.7),
+            },
             HeadlessTransform(Transform::from_xyz(x_pos, y_pos, 1.)),
         ));
     }

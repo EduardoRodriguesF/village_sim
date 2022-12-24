@@ -1,9 +1,10 @@
+pub mod components;
 pub mod prelude;
 pub mod resources;
 mod systems;
 
-use systems::*;
 use prelude::*;
+use systems::*;
 
 pub struct WorldPlugin;
 
