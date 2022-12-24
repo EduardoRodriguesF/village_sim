@@ -9,11 +9,11 @@ pub enum TerrainType {
 }
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone, Copy, PartialOrd)]
-pub struct Node(i16, i16);
+pub struct MapNode(i16, i16);
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, PartialOrd)]
 pub struct Successor {
-    pub node: Node,
+    pub node: MapNode,
     pub cost: u32,
 }
 
@@ -50,7 +50,7 @@ impl Map {
         }
     }
 
-    pub fn get_successors(&self, node: &Node) -> Vec<Successor> {
+    pub fn get_successors(&self, node: &MapNode) -> Vec<Successor> {
         let mut successors = Vec::new();
         for dx in -1i16..=1 {
             for dy in -1i16..=1 {
@@ -58,7 +58,7 @@ impl Map {
                     continue;
                 }
 
-                let next_node = Node(node.0 + dx, node.1 + dy);
+                let next_node = MapNode(node.0 + dx, node.1 + dy);
                 if next_node.0 < 0
                     || next_node.0 >= self.width.into()
                     || next_node.1 < 0
@@ -80,7 +80,7 @@ impl Map {
         successors
     }
 
-    pub fn find_path(&self, start: Node, goal: Node) -> Option<(Vec<Node>, u32)> {
+    pub fn find_path(&self, start: MapNode, goal: MapNode) -> Option<(Vec<MapNode>, u32)> {
         astar(
             &start,
             |p| {
@@ -94,7 +94,7 @@ impl Map {
         )
     }
 
-    pub fn find_path_by_vec2(&self, start: Vec2, goal: Vec2) -> Option<(Vec<Node>, u32)> {
+    pub fn find_path_by_vec2(&self, start: Vec2, goal: Vec2) -> Option<(Vec<MapNode>, u32)> {
         let start = vec2_to_node(&start);
         let goal = vec2_to_node(&goal);
 
@@ -102,15 +102,15 @@ impl Map {
     }
 }
 
-pub fn vec2_to_node(translation: &Vec2) -> Node {
-    Node(
+pub fn vec2_to_node(translation: &Vec2) -> MapNode {
+    MapNode(
         translation.x as i16 / TILE_SIZE as i16,
         translation.y as i16 / TILE_SIZE as i16,
     )
 }
 
-pub fn node_to_vec2(node: Node) -> Vec2 {
-    let Node(x, y) = node;
+pub fn node_to_vec2(node: MapNode) -> Vec2 {
+    let MapNode(x, y) = node;
 
     Vec2::new(x as f32 * TILE_SIZE as f32, y as f32 * TILE_SIZE as f32)
 }
@@ -123,12 +123,12 @@ mod tests {
     fn map_finds_path() {
         let map = Map::new(vec!["191", "271", "111"]);
 
-        let (nodes, cost) = map.find_path(Node(0, 0), Node(2, 2)).unwrap();
+        let (nodes, cost) = map.find_path(MapNode(0, 0), MapNode(2, 2)).unwrap();
 
         assert_eq!(cost, 4);
         assert_eq!(
             nodes,
-            vec![Node(0, 0), Node(0, 1), Node(1, 2), Node(2, 2)]
+            vec![MapNode(0, 0), MapNode(0, 1), MapNode(1, 2), MapNode(2, 2)]
         );
     }
 }
