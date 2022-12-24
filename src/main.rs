@@ -8,8 +8,8 @@ mod prelude {
     pub const SCALE: f32 = 1.;
 }
 
-use prelude::*;
 use headless_transform::HeadlessPositionPlugin;
+use prelude::*;
 use world::WorldPlugin;
 
 fn main() {
