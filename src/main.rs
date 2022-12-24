@@ -1,4 +1,5 @@
 mod headless_transform;
+mod world;
 
 mod prelude {
     pub use crate::headless_transform::components::*;
@@ -9,11 +10,13 @@ mod prelude {
 
 use prelude::*;
 use headless_transform::HeadlessPositionPlugin;
+use world::WorldPlugin;
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         .add_plugin(HeadlessPositionPlugin)
+        .add_plugin(WorldPlugin)
         .add_startup_system(setup)
         .run();
 }
