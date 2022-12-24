@@ -1,12 +1,14 @@
 use crate::prelude::*;
 
+const POSITION_OFFSET_MULTIPLIER: f32 = 300.;
+
 pub fn setup(mut commands: Commands) {
     for _ in 0..20 {
         let r: f32 = rand::random();
         let g: f32 = rand::random();
         let b: f32 = rand::random();
-        let x_offset: f32 = rand::random();
-        let y_offset: f32 = rand::random();
+        let x_pos = rand::random::<f32>() * POSITION_OFFSET_MULTIPLIER;
+        let y_pos = rand::random::<f32>() * POSITION_OFFSET_MULTIPLIER;
 
         commands.spawn((
             SpriteBundle {
@@ -17,7 +19,7 @@ pub fn setup(mut commands: Commands) {
                 },
                 ..default()
             },
-            HeadlessTransform(Transform::from_xyz(x_offset * 300., y_offset * 300., 1.)),
+            HeadlessTransform(Transform::from_xyz(x_pos, y_pos, 1.)),
         ));
     }
 }
