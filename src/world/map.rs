@@ -21,7 +21,7 @@ pub struct Successor {
 pub struct Map {
     pub width: u8,
     pub height: u8,
-    data: Vec<Vec<Option<u8>>>,
+    pub data: Vec<Vec<Option<u8>>>,
 }
 
 impl Map {

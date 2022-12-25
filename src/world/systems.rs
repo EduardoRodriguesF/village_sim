@@ -34,6 +34,30 @@ pub fn setup(mut commands: Commands, mut seed: ResMut<Seed>) {
     }
 }
 
+pub fn create_walls(mut commands: Commands, map: Res<Map>) {
+    for (row_idx, row) in map.data.iter().enumerate() {
+        for (col_idx, tile) in row.iter().enumerate() {
+            if tile.is_none() {
+                commands.spawn((
+                    SpriteBundle {
+                        sprite: Sprite {
+                            color: Color::hex("333").unwrap(),
+                            rect: Some(Rect::new(0., 0., 16., 16.)),
+                            ..default()
+                        },
+                        ..default()
+                    },
+                    HeadlessTransform(Transform::from_xyz(
+                        col_idx as f32 * 16.,
+                        row_idx as f32 * 16.,
+                        1.,
+                    )),
+                ));
+            }
+        }
+    }
+}
+
 #[cfg(debug_assertions)]
 pub fn initial_debug(seed: Res<Seed>) {
     println!("Seed: {}", seed.key);

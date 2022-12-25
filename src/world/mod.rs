@@ -13,7 +13,8 @@ impl Plugin for WorldPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<Seed>()
             .insert_resource(Map::from_ldtk("data/village.ldtk"))
-            .add_startup_system(setup);
+            .add_startup_system(setup)
+            .add_startup_system(create_walls);
 
         if cfg!(debug_assertions) {
             app.add_startup_system(initial_debug);
