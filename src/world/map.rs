@@ -25,7 +25,7 @@ pub struct Map {
 }
 
 impl Map {
-    pub fn new(map_lines: Vec<&str>) -> Self {
+    pub fn new(map_lines: Vec<String>) -> Self {
         let width = map_lines[0].len() as u8;
         let height = map_lines.len() as u8;
         let mut data = Vec::new();
@@ -48,6 +48,35 @@ impl Map {
             height,
             data,
         }
+    }
+
+    pub fn from_ldtk(file: &str) -> Self {
+        let ldtk = ldtk_rust::Project::new(file);
+        let mut data: Vec<String> = Vec::new();
+
+        if let Some(level) = ldtk.get_level(0) {
+            if let Some(layers) = &level.layer_instances {
+                let path_cost = layers.iter().find(|l| l.identifier == "PathCost").unwrap();
+                let walls = layers.iter().find(|l| l.identifier == "Walls").unwrap();
+                let mut row = String::new();
+
+                for (idx, grid_item) in path_cost.int_grid_csv.iter().enumerate() {
+                    let next_item = match walls.int_grid_csv.get(idx) {
+                        Some(0) => grid_item.to_string(),
+                        _ => String::from("x"),
+                    };
+
+                    row.push_str(&next_item);
+
+                    if (idx + 1) % (path_cost.c_wid as usize) == 0 {
+                        data.push(row.clone());
+                        row.clear();
+                    }
+                }
+            }
+        }
+
+        Self::new(data)
     }
 
     pub fn get_successors(&self, node: &MapNode) -> Vec<Successor> {
@@ -121,7 +150,11 @@ mod tests {
 
     #[test]
     fn map_finds_path() {
-        let map = Map::new(vec!["191", "271", "111"]);
+        let map = Map::new(vec![
+            "191".to_string(),
+            "271".to_string(),
+            "111".to_string(),
+        ]);
 
         let (nodes, cost) = map.find_path(MapNode(0, 0), MapNode(2, 2)).unwrap();
 
