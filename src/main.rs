@@ -2,6 +2,7 @@ mod destinations;
 mod headless_transform;
 mod movement;
 mod world;
+mod activities;
 
 mod prelude {
     pub use crate::headless_transform::components::*;
@@ -17,6 +18,7 @@ use headless_transform::HeadlessPositionPlugin;
 use movement::MovementPlugin;
 use prelude::*;
 use world::WorldPlugin;
+use activities::ActivitiesPlugin;
 
 fn main() {
     App::new()
@@ -33,6 +35,7 @@ fn main() {
         .add_plugin(WorldPlugin)
         .add_plugin(MovementPlugin)
         .add_plugin(DestinationsPlugin)
+        .add_plugin(ActivitiesPlugin)
         .add_startup_system(setup)
         .add_system(camera_movement)
         .run();
