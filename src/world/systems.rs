@@ -62,8 +62,8 @@ pub fn setup(mut commands: Commands, mut seed: ResMut<Seed>) {
             },
             Routine {
                 activities: vec![
-                    Busy::from_seconds(10., Some(Vec2::new(800., 300.))),
-                    Busy::from_seconds(5., Some(Vec2::new(800., 100.))),
+                    Busy::from_location(Vec2::new(800., 300.), 5.),
+                    Busy::from_location(Vec2::new(800., 100.), 10.),
                 ],
                 is_loop: true,
                 ..default()

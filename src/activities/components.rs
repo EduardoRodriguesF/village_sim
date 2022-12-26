@@ -20,10 +20,13 @@ pub struct Busy {
 }
 
 impl Busy {
-    pub fn from_seconds(secs: f32, location: Option<Vec2>) -> Self {
+    pub fn from_location(location: Vec2, secs: f32) -> Self {
         let timer = Timer::from_seconds(secs, TimerMode::Once);
 
-        Self { timer, location }
+        Self {
+            timer,
+            location: Some(location),
+        }
     }
 }
 
