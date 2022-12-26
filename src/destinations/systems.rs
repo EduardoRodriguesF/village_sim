@@ -31,6 +31,7 @@ pub fn determine_instructions(
 }
 
 pub fn follow_instructions(
+    mut seed: ResMut<Seed>,
     mut commands: Commands,
     mut query: Query<(Entity, &mut InstructionsToDestination, &HeadlessTransform)>,
 ) {
@@ -43,7 +44,7 @@ pub fn follow_instructions(
                 vec2_to_node(&Vec2::new(transform.translation.x, transform.translation.y));
 
             if current_node != next_instruction {
-                let next_instruction = node_to_vec2(next_instruction);
+                let next_instruction = node_to_vec2(next_instruction, Some((8., &mut seed.rng)));
                 let current_translation =
                     Vec2::new(transform.translation.x, transform.translation.y);
 
