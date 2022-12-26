@@ -7,6 +7,38 @@ use rand::prelude::*;
 
 const POSITION_OFFSET_MULTIPLIER: f32 = 300.;
 
+pub fn spawn_entities(mut commands: Commands, map: Res<Map>) {
+    for entity in map.entities.iter() {
+        let maybe_entity_commands = match entity.identifier.as_str() {
+            "MarketTent" => Some(commands.spawn((
+                Activity {
+                    avg_time_in_seconds: 12.,
+                },
+                SpriteBundle {
+                    sprite: Sprite {
+                        color: Color::LIME_GREEN,
+                        rect: Some(Rect::new(0., 0., 32., 32.)),
+                        anchor: bevy::sprite::Anchor::BottomCenter,
+                        ..default()
+                    },
+                    ..default()
+                },
+            ))),
+            _ => None,
+        };
+
+        if let Some(mut entity_commands) = maybe_entity_commands {
+            let transform = HeadlessTransform(Transform::from_translation(Vec3::new(
+                entity.position.x,
+                entity.position.y,
+                1.,
+            )));
+
+            entity_commands.insert(transform);
+        }
+    }
+}
+
 pub fn setup(mut commands: Commands, mut seed: ResMut<Seed>) {
     for _ in 0..20 {
         let r: f32 = seed.rng.gen();
