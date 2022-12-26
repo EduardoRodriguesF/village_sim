@@ -1,6 +1,5 @@
 use bevy::prelude::*;
 use pathfinding::prelude::astar;
-use rand::prelude::*;
 
 const TILE_SIZE: u8 = 16;
 
@@ -139,20 +138,10 @@ pub fn vec2_to_node(translation: &Vec2) -> MapNode {
     )
 }
 
-pub fn node_to_vec2(node: MapNode, variation: Option<(f32, &mut StdRng)>) -> Vec2 {
+pub fn node_to_vec2(node: MapNode) -> Vec2 {
     let MapNode(x, y) = node;
 
-    let mut pos = Vec2::new(x as f32 * TILE_SIZE as f32, y as f32 * TILE_SIZE as f32);
-
-    if let Some((variation, rng)) = variation {
-        let gen = |rng: &mut StdRng| rng.gen_range(-variation..variation);
-
-        pos += Vec2::new(gen(rng), gen(rng));
-    }
-
-    println!("{}", pos);
-
-    pos
+    Vec2::new(x as f32 * TILE_SIZE as f32, y as f32 * TILE_SIZE as f32)
 }
 
 #[cfg(test)]
