@@ -1,6 +1,9 @@
 use super::prelude::*;
 
 #[derive(Component)]
+pub struct Identifier(pub String);
+
+#[derive(Component)]
 pub struct Activity {
     pub avg_time_in_seconds: f32,
 }

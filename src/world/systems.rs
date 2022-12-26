@@ -34,7 +34,7 @@ pub fn spawn_entities(mut commands: Commands, map: Res<Map>) {
                 1.,
             )));
 
-            entity_commands.insert(transform);
+            entity_commands.insert((Identifier(entity.identifier.to_owned()), transform));
         }
     }
 }
