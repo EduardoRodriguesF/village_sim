@@ -1,8 +1,9 @@
+mod activities;
 mod destinations;
 mod headless_transform;
 mod movement;
 mod world;
-mod activities;
+mod dev_tools;
 
 mod prelude {
     pub use crate::headless_transform::components::*;
@@ -13,32 +14,39 @@ mod prelude {
     pub const SCREEN_HEIGHT: i32 = 592;
 }
 
+use activities::ActivitiesPlugin;
+use dev_tools::DevToolsPlugins;
 use destinations::DestinationsPlugin;
 use headless_transform::HeadlessPositionPlugin;
 use movement::MovementPlugin;
 use prelude::*;
 use world::WorldPlugin;
-use activities::ActivitiesPlugin;
 
 fn main() {
-    App::new()
-        .add_plugins(DefaultPlugins.set(WindowPlugin {
-            window: WindowDescriptor {
-                width: SCREEN_WIDTH as f32,
-                height: SCREEN_HEIGHT as f32,
-                resizable: false,
-                ..default()
-            },
+    let mut app = App::new();
+
+    app.add_plugins(DefaultPlugins.set(WindowPlugin {
+        window: WindowDescriptor {
+            width: SCREEN_WIDTH as f32,
+            height: SCREEN_HEIGHT as f32,
+            resizable: false,
             ..default()
-        }))
-        .add_plugin(HeadlessPositionPlugin)
-        .add_plugin(WorldPlugin)
-        .add_plugin(MovementPlugin)
-        .add_plugin(DestinationsPlugin)
-        .add_plugin(ActivitiesPlugin)
-        .add_startup_system(setup)
-        .add_system(camera_movement)
-        .run();
+        },
+        ..default()
+    }))
+    .add_plugin(HeadlessPositionPlugin)
+    .add_plugin(WorldPlugin)
+    .add_plugin(MovementPlugin)
+    .add_plugin(DestinationsPlugin)
+    .add_plugin(ActivitiesPlugin)
+    .add_startup_system(setup)
+    .add_system(camera_movement);
+
+    if cfg!(debug_assertions) {
+        app.add_plugins(DevToolsPlugins);
+    }
+
+    app.run();
 }
 
 fn setup(mut commands: Commands) {
