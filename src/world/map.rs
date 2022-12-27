@@ -3,11 +3,6 @@ use pathfinding::prelude::astar;
 
 const TILE_SIZE: u8 = 16;
 
-pub enum TerrainType {
-    Dirt,
-    Stone,
-}
-
 pub struct EntityData {
     pub identifier: String,
     pub position: Vec2,
