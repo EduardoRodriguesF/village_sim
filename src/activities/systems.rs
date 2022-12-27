@@ -40,7 +40,7 @@ pub fn search_activity(
             )
             .collect::<Vec<(Entity, &HeadlessTransform)>>();
 
-        if matching_activities.len() > 0 {
+        if !matching_activities.is_empty() {
             matching_activities.sort_by(|(_, a_transform), (_, b_transform)| {
                 let a_distance = transform.translation.distance(a_transform.translation);
                 let b_distance = transform.translation.distance(b_transform.translation);
