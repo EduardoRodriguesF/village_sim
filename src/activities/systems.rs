@@ -1,4 +1,7 @@
 use super::prelude::*;
+use crate::world::prelude::*;
+use rand::distributions::WeightedIndex;
+use rand::prelude::*;
 
 pub fn apply_activity_plan(
     mut commands: Commands,
@@ -22,6 +25,7 @@ pub fn apply_activity_plan(
 
 pub fn search_activity(
     mut commands: Commands,
+    mut seed: ResMut<Seed>,
     q_people: Query<(Entity, &SearchingActivity, &HeadlessTransform), Without<Busy>>,
     q_activities: Query<(Entity, &Identifier, &HeadlessTransform), With<Activity>>,
 ) {
@@ -44,9 +48,18 @@ pub fn search_activity(
                 a_distance.partial_cmp(&b_distance).unwrap()
             });
 
-            let (chosen, _transform) = matching_activities[0];
+            // Nearest will be preferred
+            let weights: Vec<usize> = matching_activities
+                .iter()
+                .enumerate()
+                .rev()
+                .map(|(idx, _)| (idx * idx) + 1)
+                .collect();
 
-            let activity = commands.entity(chosen).id();
+            let dist = WeightedIndex::new(weights).unwrap();
+            let (chosen, _transform) = matching_activities[dist.sample(&mut seed.rng)];
+
+            let activity = commands.entity(chosen.to_owned()).id();
 
             commands.entity(entity).insert(ActivityPlan { activity });
         }
