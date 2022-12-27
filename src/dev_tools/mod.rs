@@ -5,6 +5,7 @@ pub mod prelude;
 pub mod seed_info;
 
 use prelude::*;
+use bevy_prototype_debug_lines::DebugLinesPlugin;
 
 pub struct DevToolsPlugins;
 
@@ -16,5 +17,6 @@ impl PluginGroup for DevToolsPlugins {
             .add(NpcToolsPlugin)
             .add(NpcCountingPlugin)
             .add(FrameTimeDiagnosticsPlugin::default())
+            .add(DebugLinesPlugin::default())
     }
 }

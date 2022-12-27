@@ -3,6 +3,7 @@ use crate::activities::prelude::*;
 use crate::movement::prelude::*;
 use crate::cursor::Cursor;
 use rand::prelude::*;
+use bevy_prototype_debug_lines::*;
 
 pub fn setup_tracking_text(mut commands: Commands, asset_server: Res<AssetServer>) {
     let text_section = move |color, value: &str| {
@@ -157,6 +158,21 @@ pub fn create_npc(mut commands: Commands, buttons: Res<Input<MouseButton>>, mut 
                 HeadlessTransform(Transform::from_xyz(cursor_pos.x, cursor_pos.y, 1.)),
                 Velocity::new(0., 0.),
             ));
+        }
+    }
+}
+
+pub fn trace_path(mut lines: ResMut<DebugLines>, q_tracked: Query<(&HeadlessTransform, &InstructionsToDestination), With<DebugTracking>>) {
+    if let Ok((transform, instructions)) = q_tracked.get_single() {
+        let mut last_step = transform.translation;
+
+        for node in instructions.iter() {
+            let vec2_node = node_to_vec2(*node);
+            let step = Vec3::new(vec2_node.x, vec2_node.y, 1.);
+
+            lines.line(last_step, step, 0.);
+
+            last_step = step;
         }
     }
 }
