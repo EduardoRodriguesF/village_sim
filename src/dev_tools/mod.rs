@@ -4,8 +4,8 @@ pub mod npc_tools;
 pub mod prelude;
 pub mod seed_info;
 
-use prelude::*;
 use bevy_prototype_debug_lines::DebugLinesPlugin;
+use prelude::*;
 
 pub struct DevToolsPlugins;
 

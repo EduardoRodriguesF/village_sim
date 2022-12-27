@@ -88,7 +88,8 @@ impl Map {
 
                 for entity in entities_layer.entity_instances.iter() {
                     let identifier = entity.identifier.clone();
-                    let position = Vec2::new(entity.grid[0] as f32, entity.grid[1] as f32) * grid_size;
+                    let position =
+                        Vec2::new(entity.grid[0] as f32, entity.grid[1] as f32) * grid_size;
 
                     entities.push(EntityData {
                         identifier,

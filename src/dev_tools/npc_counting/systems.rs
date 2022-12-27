@@ -52,7 +52,10 @@ pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         });
 }
 
-pub fn count_npcs(mut count: ResMut<NpcCount>, q_npcs: Query<Option<&HeadlessTransform>, With<NpcStats>>) {
+pub fn count_npcs(
+    mut count: ResMut<NpcCount>,
+    q_npcs: Query<Option<&HeadlessTransform>, With<NpcStats>>,
+) {
     count.reset();
 
     for maybe_transform in q_npcs.iter() {
@@ -64,13 +67,19 @@ pub fn count_npcs(mut count: ResMut<NpcCount>, q_npcs: Query<Option<&HeadlessTra
     }
 }
 
-pub fn update_visible_text(count: Res<NpcCount>, mut q_text: Query<&mut Text, With<VisibleCountingText>>) {
+pub fn update_visible_text(
+    count: Res<NpcCount>,
+    mut q_text: Query<&mut Text, With<VisibleCountingText>>,
+) {
     if let Ok(mut text) = q_text.get_single_mut() {
         text.sections[0].value = count.visible.to_string();
     }
 }
 
-pub fn update_total_text(count: Res<NpcCount>, mut q_text: Query<&mut Text, With<TotalCountingText>>) {
+pub fn update_total_text(
+    count: Res<NpcCount>,
+    mut q_text: Query<&mut Text, With<TotalCountingText>>,
+) {
     if let Ok(mut text) = q_text.get_single_mut() {
         text.sections[0].value = count.total.to_string();
     }

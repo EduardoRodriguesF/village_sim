@@ -61,9 +61,7 @@ pub fn setup(mut commands: Commands, mut seed: ResMut<Seed>) {
                 speed: seed.rng.gen_range(1.0..1.7),
             },
             Routine {
-                activities: vec![
-                    RoutineItem::from_search("MarketTent")
-                ],
+                activities: vec![RoutineItem::from_search("MarketTent")],
                 is_loop: true,
                 ..default()
             },
