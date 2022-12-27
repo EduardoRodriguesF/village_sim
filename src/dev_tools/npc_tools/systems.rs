@@ -1,6 +1,8 @@
 use super::prelude::*;
 use crate::activities::prelude::*;
 use crate::movement::prelude::*;
+use crate::cursor::Cursor;
+use rand::prelude::*;
 
 pub fn setup_tracking_text(mut commands: Commands, asset_server: Res<AssetServer>) {
     let text_section = move |color, value: &str| {
@@ -121,6 +123,40 @@ pub fn attach_log(
 
                 info!("{:#?}", stats);
             }
+        }
+    }
+}
+
+pub fn create_npc(mut commands: Commands, buttons: Res<Input<MouseButton>>, mut seed: ResMut<Seed>, cursor: Res<Cursor>) {
+    if buttons.pressed(MouseButton::Right) {
+        if let Some(cursor_pos) = cursor.relative_position {
+            let r: f32 = seed.rng.gen();
+            let g: f32 = seed.rng.gen();
+            let b: f32 = seed.rng.gen();
+
+            commands.spawn((
+                SpriteBundle {
+                    sprite: Sprite {
+                        color: Color::rgb(r, g, b),
+                        rect: Some(Rect::new(0., 0., 16., 32.)),
+                        anchor: bevy::sprite::Anchor::BottomCenter,
+                        ..default()
+                    },
+                    ..default()
+                },
+                NpcStats {
+                    speed: seed.rng.gen_range(1.0..1.7),
+                },
+                Routine {
+                    activities: vec![
+                        RoutineItem::from_search("MarketTent")
+                    ],
+                    is_loop: true,
+                    ..default()
+                },
+                HeadlessTransform(Transform::from_xyz(cursor_pos.x, cursor_pos.y, 1.)),
+                Velocity::new(0., 0.),
+            ));
         }
     }
 }

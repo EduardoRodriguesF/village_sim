@@ -11,6 +11,7 @@ impl Plugin for NpcToolsPlugin {
     fn build(&self, app: &mut App) {
         app.add_startup_system(setup_tracking_text)
             .add_system(attach_log)
+            .add_system(create_npc)
             .add_system(update_position_text)
             .add_system(update_velocity_text)
             .add_system(update_routine_len_text)
