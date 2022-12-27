@@ -1,9 +1,10 @@
 use super::prelude::*;
 use crate::activities::prelude::*;
-use crate::movement::prelude::*;
 use crate::cursor::Cursor;
-use rand::prelude::*;
+use crate::destinations::prelude::*;
+use crate::movement::prelude::*;
 use bevy_prototype_debug_lines::*;
+use rand::prelude::*;
 
 pub fn setup_tracking_text(mut commands: Commands, asset_server: Res<AssetServer>) {
     let text_section = move |color, value: &str| {
@@ -44,6 +45,13 @@ pub fn setup_tracking_text(mut commands: Commands, asset_server: Res<AssetServer
                     text_section(Color::CYAN, ""),
                 ]),
                 PositionText,
+            ));
+            parent.spawn((
+                TextBundle::from_sections([
+                    text_section(Color::GREEN, "Destination: "),
+                    text_section(Color::CYAN, ""),
+                ]),
+                DestinationText,
             ));
             parent.spawn((
                 TextBundle::from_sections([
@@ -128,7 +136,12 @@ pub fn attach_log(
     }
 }
 
-pub fn create_npc(mut commands: Commands, buttons: Res<Input<MouseButton>>, mut seed: ResMut<Seed>, cursor: Res<Cursor>) {
+pub fn create_npc(
+    mut commands: Commands,
+    buttons: Res<Input<MouseButton>>,
+    mut seed: ResMut<Seed>,
+    cursor: Res<Cursor>,
+) {
     if buttons.pressed(MouseButton::Right) {
         if let Some(cursor_pos) = cursor.relative_position {
             let r: f32 = seed.rng.gen();
@@ -149,9 +162,7 @@ pub fn create_npc(mut commands: Commands, buttons: Res<Input<MouseButton>>, mut 
                     speed: seed.rng.gen_range(1.0..1.7),
                 },
                 Routine {
-                    activities: vec![
-                        RoutineItem::from_search("MarketTent")
-                    ],
+                    activities: vec![RoutineItem::from_search("MarketTent")],
                     is_loop: true,
                     ..default()
                 },
@@ -162,7 +173,10 @@ pub fn create_npc(mut commands: Commands, buttons: Res<Input<MouseButton>>, mut 
     }
 }
 
-pub fn trace_path(mut lines: ResMut<DebugLines>, q_tracked: Query<(&HeadlessTransform, &InstructionsToDestination), With<DebugTracking>>) {
+pub fn trace_path(
+    mut lines: ResMut<DebugLines>,
+    q_tracked: Query<(&HeadlessTransform, &InstructionsToDestination), With<DebugTracking>>,
+) {
     if let Ok((transform, instructions)) = q_tracked.get_single() {
         let mut last_step = transform.translation;
 
@@ -187,6 +201,23 @@ pub fn update_position_text(
             let y = transform.translation.y;
 
             text.sections[1].value = format!("({x:.2}, {y:.2})");
+        }
+    }
+}
+
+pub fn update_destination_text(
+    q_tracked: Query<&InstructionsToDestination, With<DebugTracking>>,
+    mut q_text: Query<&mut Text, With<DestinationText>>,
+) {
+    if let Ok(destination) = q_tracked.get_single() {
+        if let Ok(mut text) = q_text.get_single_mut() {
+            if let Some(node) = destination.get(0) {
+                let pos = node_to_vec2(*node);
+                let x = pos.x;
+                let y = pos.y;
+
+                text.sections[1].value = format!("({x:.2}, {y:.2})");
+            }
         }
     }
 }

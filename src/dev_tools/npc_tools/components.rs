@@ -9,6 +9,9 @@ pub struct DebugTracking;
 pub struct PositionText;
 
 #[derive(Component)]
+pub struct DestinationText;
+
+#[derive(Component)]
 pub struct VelocityText;
 
 #[derive(Component)]
