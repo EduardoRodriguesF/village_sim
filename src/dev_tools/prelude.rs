@@ -4,3 +4,4 @@ pub use super::seed_info::*;
 pub use bevy::app::PluginGroupBuilder;
 pub use bevy::diagnostic::FrameTimeDiagnosticsPlugin;
 pub use bevy::prelude::*;
+pub use super::npc_counting::*;

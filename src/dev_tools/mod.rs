@@ -1,7 +1,8 @@
 pub mod benchmark;
+pub mod npc_counting;
+pub mod npc_tools;
 pub mod prelude;
 pub mod seed_info;
-pub mod npc_tools;
 
 use prelude::*;
 
@@ -13,6 +14,7 @@ impl PluginGroup for DevToolsPlugins {
             .add(BenchmarkPlugin)
             .add(SeedInfoPlugin)
             .add(NpcToolsPlugin)
+            .add(NpcCountingPlugin)
             .add(FrameTimeDiagnosticsPlugin::default())
     }
 }
