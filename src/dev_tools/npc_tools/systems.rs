@@ -90,11 +90,11 @@ pub fn setup_tracking_text(mut commands: Commands, asset_server: Res<AssetServer
 pub fn attach_log(
     mut commands: Commands,
     buttons: Res<Input<MouseButton>>,
-    windows: Res<Windows>,
+    cursor: Res<Cursor>,
     q_npcs: Query<(Entity, &NpcStats, &Transform)>,
 ) {
     if buttons.just_pressed(MouseButton::Left) {
-        if let Some(cursor_pos) = windows.get_primary().unwrap().cursor_position() {
+        if let Some(cursor_pos) = cursor.relative_position {
             let mut npcs_by_distance: Vec<(Entity, &NpcStats, f32)> = q_npcs
                 .iter()
                 .filter_map(|(entity, stats, transform)| {
