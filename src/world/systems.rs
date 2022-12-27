@@ -96,8 +96,3 @@ pub fn create_walls(mut commands: Commands, map: Res<Map>) {
         }
     }
 }
-
-#[cfg(debug_assertions)]
-pub fn initial_debug(seed: Res<Seed>) {
-    println!("Seed: {}", seed.key);
-}
