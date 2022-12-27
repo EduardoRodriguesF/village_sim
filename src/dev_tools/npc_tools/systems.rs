@@ -23,6 +23,10 @@ pub fn attach_log(
                 .collect();
 
             if !npcs_by_distance.is_empty() {
+                for (entity, _, _) in q_npcs.iter() {
+                    commands.entity(entity).remove::<DebugTracking>();
+                }
+
                 npcs_by_distance.sort_by(|(_, _, a), (_, _, b)| a.partial_cmp(b).unwrap());
                 let (entity, stats, _distance) = npcs_by_distance[0];
 
