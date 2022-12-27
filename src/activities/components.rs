@@ -64,7 +64,7 @@ impl RoutineItem {
     }
 }
 
-#[derive(Component)]
+#[derive(Component, Default)]
 pub struct Routine {
     pub current_idx: Option<usize>,
     pub activities: Vec<RoutineItem>,
@@ -91,15 +91,5 @@ impl Routine {
 
         self.current_idx = Some(idx);
         self.get_current()
-    }
-}
-
-impl Default for Routine {
-    fn default() -> Self {
-        Self {
-            current_idx: None,
-            activities: Vec::new(),
-            is_loop: false,
-        }
     }
 }
