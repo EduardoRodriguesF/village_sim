@@ -1,10 +1,43 @@
 use super::prelude::*;
+use crate::activities::prelude::*;
 use crate::destinations::prelude::*;
 use crate::movement::prelude::*;
 use crate::prelude::*;
 use rand::prelude::*;
 
 const POSITION_OFFSET_MULTIPLIER: f32 = 300.;
+
+pub fn spawn_entities(mut commands: Commands, map: Res<Map>) {
+    for entity in map.entities.iter() {
+        let maybe_entity_commands = match entity.identifier.as_str() {
+            "MarketTent" => Some(commands.spawn((
+                Activity {
+                    avg_time_in_seconds: 12.,
+                },
+                SpriteBundle {
+                    sprite: Sprite {
+                        color: Color::LIME_GREEN,
+                        rect: Some(Rect::new(0., 0., 32., 32.)),
+                        anchor: bevy::sprite::Anchor::BottomCenter,
+                        ..default()
+                    },
+                    ..default()
+                },
+            ))),
+            _ => None,
+        };
+
+        if let Some(mut entity_commands) = maybe_entity_commands {
+            let transform = HeadlessTransform(Transform::from_translation(Vec3::new(
+                entity.position.x,
+                entity.position.y,
+                1.,
+            )));
+
+            entity_commands.insert((Identifier(entity.identifier.to_owned()), transform));
+        }
+    }
+}
 
 pub fn setup(mut commands: Commands, mut seed: ResMut<Seed>) {
     for _ in 0..20 {
@@ -27,7 +60,13 @@ pub fn setup(mut commands: Commands, mut seed: ResMut<Seed>) {
             NpcStats {
                 speed: seed.rng.gen_range(1.0..1.7),
             },
-            DestinationNode(MapNode(3, 3)),
+            Routine {
+                activities: vec![
+                    RoutineItem::from_search("MarketTent")
+                ],
+                is_loop: true,
+                ..default()
+            },
             HeadlessTransform(Transform::from_xyz(x_pos, y_pos, 1.)),
             Velocity::new(0., 0.),
         ));

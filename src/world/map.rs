@@ -8,6 +8,11 @@ pub enum TerrainType {
     Stone,
 }
 
+pub struct EntityData {
+    pub identifier: String,
+    pub position: Vec2,
+}
+
 #[derive(Debug, PartialEq, Eq, Hash, Clone, Copy, PartialOrd)]
 pub struct MapNode(pub i16, pub i16);
 
@@ -22,10 +27,11 @@ pub struct Map {
     pub width: u8,
     pub height: u8,
     pub data: Vec<Vec<Option<u8>>>,
+    pub entities: Vec<EntityData>,
 }
 
 impl Map {
-    pub fn new(map_lines: Vec<String>) -> Self {
+    pub fn new(map_lines: Vec<String>, entities: Vec<EntityData>) -> Self {
         let width = map_lines[0].len() as u8;
         let height = map_lines.len() as u8;
         let mut data = Vec::new();
@@ -47,17 +53,21 @@ impl Map {
             width,
             height,
             data,
+            entities,
         }
     }
 
     pub fn from_ldtk(file: &str) -> Self {
         let ldtk = ldtk_rust::Project::new(file);
         let mut data: Vec<String> = Vec::new();
+        let mut entities: Vec<EntityData> = Vec::new();
 
         if let Some(level) = ldtk.get_level(0) {
             if let Some(layers) = &level.layer_instances {
                 let path_cost = layers.iter().find(|l| l.identifier == "PathCost").unwrap();
                 let walls = layers.iter().find(|l| l.identifier == "Walls").unwrap();
+                let entities_layer = layers.iter().find(|l| l.identifier == "Entities").unwrap();
+
                 let mut row = String::new();
 
                 for (idx, grid_item) in path_cost.int_grid_csv.iter().enumerate() {
@@ -73,10 +83,22 @@ impl Map {
                         row.clear();
                     }
                 }
+
+                let grid_size = Vec2::splat(entities_layer.grid_size as f32);
+
+                for entity in entities_layer.entity_instances.iter() {
+                    let identifier = entity.identifier.clone();
+                    let position = Vec2::new(entity.grid[0] as f32, entity.grid[1] as f32) * grid_size;
+
+                    entities.push(EntityData {
+                        identifier,
+                        position,
+                    })
+                }
             }
         }
 
-        Self::new(data)
+        Self::new(data, entities)
     }
 
     pub fn get_successors(&self, node: &MapNode) -> Vec<Successor> {
@@ -142,26 +164,4 @@ pub fn node_to_vec2(node: MapNode) -> Vec2 {
     let MapNode(x, y) = node;
 
     Vec2::new(x as f32 * TILE_SIZE as f32, y as f32 * TILE_SIZE as f32)
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn map_finds_path() {
-        let map = Map::new(vec![
-            "191".to_string(),
-            "271".to_string(),
-            "111".to_string(),
-        ]);
-
-        let (nodes, cost) = map.find_path(MapNode(0, 0), MapNode(2, 2)).unwrap();
-
-        assert_eq!(cost, 4);
-        assert_eq!(
-            nodes,
-            vec![MapNode(0, 0), MapNode(0, 1), MapNode(1, 2), MapNode(2, 2)]
-        );
-    }
 }
