@@ -55,13 +55,6 @@ impl RoutineItem {
             ..default()
         }
     }
-
-    pub fn from_busy(busy: Busy) -> RoutineItem {
-        RoutineItem {
-            busy: Some(busy),
-            ..default()
-        }
-    }
 }
 
 #[derive(Component, Default)]
