@@ -1,7 +1,6 @@
 use super::prelude::*;
 use crate::activities::prelude::*;
 use crate::cursor::Cursor;
-use crate::destinations::prelude::*;
 use crate::movement::prelude::*;
 use bevy_prototype_debug_lines::*;
 use rand::prelude::*;

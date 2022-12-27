@@ -1,8 +1,6 @@
 use super::prelude::*;
 use crate::activities::prelude::*;
-use crate::destinations::prelude::*;
 use crate::movement::prelude::*;
-use crate::prelude::*;
 use rand::prelude::*;
 
 const POSITION_OFFSET_MULTIPLIER: f32 = 300.;
