@@ -16,6 +16,11 @@ impl Default for Activity {
     }
 }
 
+#[derive(Component)]
+pub struct ActivityPlan {
+    pub activity: Entity,
+}
+
 #[derive(Component, Clone)]
 pub struct Busy {
     pub location: Option<Vec2>,
