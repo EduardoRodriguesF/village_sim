@@ -63,8 +63,12 @@ pub fn follow_routine(
         let total_activities = routine.activities.len();
 
         if total_activities > 0 {
-            if let Some(activity) = routine.next() {
-                entity.insert(activity.clone());
+            if let Some(item) = routine.next() {
+                if let Some(activity) = item.activity {
+                    entity.insert(ActivityPlan { activity });
+                } else if let Some(busy) = item.busy {
+                    entity.insert(busy);
+                }
             } else {
                 entity.remove::<Routine>();
             }

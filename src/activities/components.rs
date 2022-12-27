@@ -39,21 +39,27 @@ impl Busy {
 }
 
 #[derive(Component)]
+pub struct RoutineItem {
+    pub activity: Option<Entity>,
+    pub busy: Option<Busy>,
+}
+
+#[derive(Component)]
 pub struct Routine {
     pub current_idx: Option<usize>,
-    pub activities: Vec<Busy>,
+    pub activities: Vec<RoutineItem>,
     pub is_loop: bool,
 }
 
 impl Routine {
-    pub fn get_current(&self) -> Option<&Busy> {
+    pub fn get_current(&self) -> Option<&RoutineItem> {
         match self.current_idx {
             Some(idx) => self.activities.get(idx),
             None => None,
         }
     }
 
-    pub fn next(&mut self) -> Option<&Busy> {
+    pub fn next(&mut self) -> Option<&RoutineItem> {
         let mut idx = match self.current_idx {
             Some(v) => v + 1,
             None => 0,
