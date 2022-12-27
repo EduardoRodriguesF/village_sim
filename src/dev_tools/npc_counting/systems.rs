@@ -38,16 +38,16 @@ pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             parent.spawn((
                 TextBundle::from_sections([
                     text_section(Color::CYAN, ""),
-                    text_section(Color::GREEN, " visible"),
+                    text_section(Color::GREEN, " total"),
                 ]),
-                VisibleCountingText,
+                TotalCountingText,
             ));
             parent.spawn((
                 TextBundle::from_sections([
                     text_section(Color::CYAN, ""),
-                    text_section(Color::GREEN, " total"),
+                    text_section(Color::GREEN, " visible"),
                 ]),
-                TotalCountingText,
+                VisibleCountingText,
             ));
         });
 }
