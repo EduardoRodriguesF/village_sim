@@ -45,7 +45,7 @@ pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             parent.spawn((
                 TextBundle::from_sections([
                     text_section(Color::CYAN, ""),
-                    text_section(Color::GREEN, " unpositioned"),
+                    text_section(Color::GREEN, " total"),
                 ]),
                 TotalCountingText,
             ));
