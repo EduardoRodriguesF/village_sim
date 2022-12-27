@@ -19,9 +19,7 @@ pub fn determine_instructions(
 
         let maybe_path = map.find_path(start, destination.0);
 
-        if maybe_path.is_some() {
-            let (instructions, _cost) = maybe_path.unwrap();
-
+        if let Some((instructions, _cost)) = maybe_path {
             commands
                 .entity(entity)
                 .insert(InstructionsToDestination(instructions));
