@@ -1,9 +1,10 @@
 mod activities;
+mod cursor;
 mod destinations;
+mod dev_tools;
 mod headless_transform;
 mod movement;
 mod world;
-mod dev_tools;
 
 mod prelude {
     pub use crate::headless_transform::components::*;
@@ -15,8 +16,9 @@ mod prelude {
 }
 
 use activities::ActivitiesPlugin;
-use dev_tools::DevToolsPlugins;
+use cursor::CursorPlugin;
 use destinations::DestinationsPlugin;
+use dev_tools::DevToolsPlugins;
 use headless_transform::HeadlessPositionPlugin;
 use movement::MovementPlugin;
 use prelude::*;
@@ -39,6 +41,7 @@ fn main() {
     .add_plugin(MovementPlugin)
     .add_plugin(DestinationsPlugin)
     .add_plugin(ActivitiesPlugin)
+    .add_plugin(CursorPlugin)
     .add_startup_system(setup)
     .add_system(camera_movement);
 

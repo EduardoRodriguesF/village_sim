@@ -16,9 +16,5 @@ impl Plugin for WorldPlugin {
             .add_startup_system(setup)
             .add_startup_system(create_walls)
             .add_startup_system(spawn_entities);
-
-        if cfg!(debug_assertions) {
-            app.add_startup_system(initial_debug);
-        }
     }
 }
