@@ -62,8 +62,8 @@ pub fn setup(mut commands: Commands, mut seed: ResMut<Seed>) {
             },
             Routine {
                 activities: vec![
-                    Busy::from_location(Vec2::new(800., 300.), 5.),
-                    Busy::from_location(Vec2::new(800., 100.), 10.),
+                    RoutineItem::from_busy(Busy::from_location(Vec2::new(800., 300.), 5.)),
+                    RoutineItem::from_search("MarketTent")
                 ],
                 is_loop: true,
                 ..default()

@@ -1,6 +1,6 @@
 use super::prelude::*;
 
-#[derive(Component)]
+#[derive(Component, Clone, PartialEq, Eq, DerefMut, Deref)]
 pub struct Identifier(pub String);
 
 #[derive(Component)]
@@ -21,6 +21,9 @@ pub struct ActivityPlan {
     pub activity: Entity,
 }
 
+#[derive(Component, Deref, DerefMut)]
+pub struct SearchingActivity(pub Identifier);
+
 #[derive(Component, Clone)]
 pub struct Busy {
     pub location: Option<Vec2>,
@@ -38,10 +41,27 @@ impl Busy {
     }
 }
 
-#[derive(Component)]
+#[derive(Component, Default)]
 pub struct RoutineItem {
     pub activity: Option<Entity>,
     pub busy: Option<Busy>,
+    pub search: Option<String>,
+}
+
+impl RoutineItem {
+    pub fn from_search(identifier: &str) -> RoutineItem {
+        RoutineItem {
+            search: Some(identifier.to_string()),
+            ..default()
+        }
+    }
+
+    pub fn from_busy(busy: Busy) -> RoutineItem {
+        RoutineItem {
+            busy: Some(busy),
+            ..default()
+        }
+    }
 }
 
 #[derive(Component)]

@@ -20,6 +20,39 @@ pub fn apply_activity_plan(
     }
 }
 
+pub fn search_activity(
+    mut commands: Commands,
+    q_people: Query<(Entity, &SearchingActivity, &HeadlessTransform), Without<Busy>>,
+    q_activities: Query<(Entity, &Identifier, &HeadlessTransform), With<Activity>>,
+) {
+    for (entity, search, transform) in q_people.iter() {
+        let mut matching_activities = q_activities
+            .iter()
+            .filter_map(
+                |(entity, identifier, transform)| match search.eq(identifier) {
+                    true => Some((entity, transform)),
+                    false => None,
+                },
+            )
+            .collect::<Vec<(Entity, &HeadlessTransform)>>();
+
+        if matching_activities.len() > 0 {
+            matching_activities.sort_by(|(_, a_transform), (_, b_transform)| {
+                let a_distance = transform.translation.distance(a_transform.translation);
+                let b_distance = transform.translation.distance(b_transform.translation);
+
+                a_distance.partial_cmp(&b_distance).unwrap()
+            });
+
+            let (chosen, _transform) = matching_activities[0];
+
+            let activity = commands.entity(chosen).id();
+
+            commands.entity(entity).insert(ActivityPlan { activity });
+        }
+    }
+}
+
 pub fn go_to_activity(
     mut commands: Commands,
     q_people: Query<(Entity, &Busy), Without<DestinationNode>>,
@@ -66,8 +99,10 @@ pub fn follow_routine(
             if let Some(item) = routine.next() {
                 if let Some(activity) = item.activity {
                     entity.insert(ActivityPlan { activity });
-                } else if let Some(busy) = item.busy {
-                    entity.insert(busy);
+                } else if let Some(busy) = &item.busy {
+                    entity.insert(busy.to_owned());
+                } else if let Some(search) = &item.search {
+                    entity.insert(SearchingActivity(Identifier(search.to_string())));
                 }
             } else {
                 entity.remove::<Routine>();
