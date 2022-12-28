@@ -52,12 +52,15 @@ pub fn dynamic_collision(mut q_colliders: Query<(&mut Velocity, &HeadlessTransfo
         )
         .is_some()
         {
-            // TODO: consider forces from velocities, so that they actually are pushed by the one
-            // who's going faster
             let dir = Vec2::normalize(a2_projection - a1_projection);
+            let mut forces = Vec2::normalize(a2_velocity.into_vec2() - a1_velocity.into_vec2());
 
-            a1_velocity.one_time_speed = Some(Vec2::new(dir.x, dir.y) * -1.);
-            a2_velocity.one_time_speed = Some(Vec2::new(dir.x, dir.y));
+            if forces.is_nan() {
+                forces = Vec2::splat(0.);
+            }
+
+            a1_velocity.one_time_speed = Some((dir - forces) * -1.);
+            a2_velocity.one_time_speed = Some(dir - forces);
         }
     }
 }
