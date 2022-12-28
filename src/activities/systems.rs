@@ -18,7 +18,10 @@ pub fn apply_activity_plan(
                 None => Vec2::new(transform.translation.x, transform.translation.y),
             };
 
-            entity.insert(Busy::from_location(location, activity.avg_time_in_seconds));
+            entity.insert((
+                Busy::from_location(location, activity.avg_time_in_seconds),
+                DestinationPoint(location),
+            ));
         }
     }
 }
@@ -66,17 +69,6 @@ pub fn search_activity(
     }
 }
 
-pub fn go_to_activity(
-    mut commands: Commands,
-    q_people: Query<(Entity, &Busy), Without<DestinationPoint>>,
-) {
-    for (entity, busy) in q_people.iter() {
-        if let Some(location) = busy.location {
-            commands.entity(entity).insert(DestinationPoint(location));
-        }
-    }
-}
-
 pub fn do_activity(
     mut commands: Commands,
     time: Res<Time>,
@@ -110,8 +102,6 @@ pub fn follow_routine(
             if let Some(item) = routine.next() {
                 if let Some(activity) = item.activity {
                     entity.insert(ActivityPlan { activity });
-                } else if let Some(busy) = &item.busy {
-                    entity.insert(busy.to_owned());
                 } else if let Some(search) = &item.search {
                     entity.insert(SearchingActivity(Identifier(search.to_string())));
                 }
