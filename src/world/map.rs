@@ -142,28 +142,28 @@ impl Map {
     }
 
     pub fn find_path_by_vec2(&self, start: Vec2, goal: Vec2) -> Option<(Vec<Vec2>, u32)> {
-        let start = vec2_to_node(&start);
-        let goal = vec2_to_node(&goal);
+        let start = Self::vec2_to_node(&start);
+        let goal = Self::vec2_to_node(&goal);
 
         if let Some((nodes, cost)) = self.find_path(start, goal) {
-            let instructions: Vec<Vec2> = nodes.iter().map(|node| node_to_vec2(*node)).collect();
+            let instructions: Vec<Vec2> = nodes.iter().map(|node| Self::node_to_vec2(*node)).collect();
 
             return Some((instructions, cost));
         }
 
         None
     }
-}
 
-pub fn vec2_to_node(translation: &Vec2) -> MapNode {
-    MapNode(
-        translation.x.round() as i16 / TILE_SIZE as i16,
-        translation.y.round() as i16 / TILE_SIZE as i16,
-    )
-}
+    pub fn vec2_to_node(translation: &Vec2) -> MapNode {
+        MapNode(
+            translation.x.round() as i16 / TILE_SIZE as i16,
+            translation.y.round() as i16 / TILE_SIZE as i16,
+        )
+    }
 
-pub fn node_to_vec2(node: MapNode) -> Vec2 {
-    let MapNode(x, y) = node;
+    pub fn node_to_vec2(node: MapNode) -> Vec2 {
+        let MapNode(x, y) = node;
 
-    Vec2::new(x as f32 * TILE_SIZE as f32, y as f32 * TILE_SIZE as f32)
+        Vec2::new(x as f32 * TILE_SIZE as f32, y as f32 * TILE_SIZE as f32)
+    }
 }
