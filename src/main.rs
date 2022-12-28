@@ -4,8 +4,8 @@ mod destinations;
 mod dev_tools;
 mod headless_transform;
 mod movement;
-mod world;
 pub mod utils;
+mod world;
 
 mod prelude {
     pub use crate::headless_transform::components::*;

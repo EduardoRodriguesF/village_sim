@@ -13,8 +13,8 @@ pub fn apply_activity_plan(
 
         if let Ok((activity, maybe_activity_transform)) = q_activities.get(plan.activity) {
             let location = match maybe_activity_transform {
-                Some(transform) => Vec2::new(transform.translation.x, transform.translation.y),
-                None => Vec2::new(transform.translation.x, transform.translation.y),
+                Some(transform) => to_vec2(&transform.translation),
+                None => to_vec2(&transform.translation),
             };
 
             entity.insert((
@@ -74,7 +74,7 @@ pub fn do_activity(
     mut q_people: Query<(Entity, &HeadlessTransform, &mut Busy)>,
 ) {
     for (entity, transform, mut busy) in q_people.iter_mut() {
-        let position = Vec2::new(transform.translation.x, transform.translation.y);
+        let position = to_vec2(&transform.translation);
 
         // Do not consider as doing activity if too far away.
         if let Some(location) = busy.location {

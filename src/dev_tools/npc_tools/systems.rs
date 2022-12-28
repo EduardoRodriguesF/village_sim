@@ -108,8 +108,7 @@ pub fn attach_log(
             let mut npcs_by_distance: Vec<(Entity, &NpcStats, f32)> = q_npcs
                 .iter()
                 .filter_map(|(entity, stats, transform)| {
-                    let distance = cursor_pos
-                        .distance(Vec2::new(transform.translation.x, transform.translation.y));
+                    let distance = cursor_pos.distance(to_vec2(&transform.translation));
 
                     if distance < 32. {
                         return Some((entity, stats, distance));
@@ -180,7 +179,7 @@ pub fn trace_path(
         let mut last_step = transform.translation;
 
         for step in instructions.iter() {
-            let step = Vec3::new(step.x, step.y, 1.);
+            let step = to_vec3(step);
 
             lines.line(last_step, step, 0.);
 
