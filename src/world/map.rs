@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 use pathfinding::prelude::astar;
+use rand::prelude::*;
 
 const TILE_SIZE: u8 = 16;
 
@@ -141,23 +142,58 @@ impl Map {
         )
     }
 
-    pub fn find_path_by_vec2(&self, start: Vec2, goal: Vec2) -> Option<(Vec<MapNode>, u32)> {
-        let start = vec2_to_node(&start);
-        let goal = vec2_to_node(&goal);
+    pub fn find_path_by_vec2(
+        &self,
+        start: Vec2,
+        goal: Vec2,
+        rng: Option<&mut StdRng>,
+    ) -> Option<(Vec<Vec2>, u32)> {
+        let start = Self::vec2_to_node(&start);
+        let goal = Self::vec2_to_node(&goal);
 
-        self.find_path(start, goal)
+        if let Some((nodes, cost)) = self.find_path(start, goal) {
+            let mut instructions: Vec<Vec2> =
+                nodes.iter().map(|node| Self::node_to_vec2(*node)).collect();
+
+            if let Some(rng) = rng {
+                let variation = TILE_SIZE as f32 / 2.;
+                let variation_range = -variation..variation;
+                let mut last_step = instructions[0];
+
+                instructions = instructions.iter_mut().map(|mut step| {
+                    let x_range = (last_step.x - variation)..(last_step.x + variation);
+                    let y_range = (last_step.y - variation)..(last_step.y + variation);
+
+                    if !x_range.contains(&step.x) {
+                        step.x += rng.gen_range(variation_range.clone());
+                    }
+
+                    if !y_range.contains(&step.y) {
+                        step.y += rng.gen_range(variation_range.clone());
+                    }
+
+                    last_step = *step;
+
+                    *step
+                }).collect();
+            }
+
+            return Some((instructions, cost));
+        }
+
+        None
     }
-}
 
-pub fn vec2_to_node(translation: &Vec2) -> MapNode {
-    MapNode(
-        translation.x.round() as i16 / TILE_SIZE as i16,
-        translation.y.round() as i16 / TILE_SIZE as i16,
-    )
-}
+    pub fn vec2_to_node(translation: &Vec2) -> MapNode {
+        MapNode(
+            translation.x.round() as i16 / TILE_SIZE as i16,
+            translation.y.round() as i16 / TILE_SIZE as i16,
+        )
+    }
 
-pub fn node_to_vec2(node: MapNode) -> Vec2 {
-    let MapNode(x, y) = node;
+    pub fn node_to_vec2(node: MapNode) -> Vec2 {
+        let MapNode(x, y) = node;
 
-    Vec2::new(x as f32 * TILE_SIZE as f32, y as f32 * TILE_SIZE as f32)
+        Vec2::new(x as f32 * TILE_SIZE as f32, y as f32 * TILE_SIZE as f32)
+    }
 }

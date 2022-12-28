@@ -44,7 +44,6 @@ impl Busy {
 #[derive(Component, Default)]
 pub struct RoutineItem {
     pub activity: Option<Entity>,
-    pub busy: Option<Busy>,
     pub search: Option<String>,
 }
 

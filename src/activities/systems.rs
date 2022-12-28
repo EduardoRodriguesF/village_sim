@@ -10,7 +10,6 @@ pub fn apply_activity_plan(
 ) {
     for (entity, plan, transform) in q_people.iter() {
         let mut entity = commands.entity(entity);
-        entity.remove::<ActivityPlan>();
 
         if let Ok((activity, maybe_activity_transform)) = q_activities.get(plan.activity) {
             let location = match maybe_activity_transform {
@@ -18,7 +17,10 @@ pub fn apply_activity_plan(
                 None => Vec2::new(transform.translation.x, transform.translation.y),
             };
 
-            entity.insert(Busy::from_location(location, activity.avg_time_in_seconds));
+            entity.insert((
+                Busy::from_location(location, activity.avg_time_in_seconds),
+                DestinationPoint(location),
+            ));
         }
     }
 }
@@ -26,7 +28,7 @@ pub fn apply_activity_plan(
 pub fn search_activity(
     mut commands: Commands,
     mut seed: ResMut<Seed>,
-    q_people: Query<(Entity, &SearchingActivity, &HeadlessTransform), Without<Busy>>,
+    q_people: Query<(Entity, &SearchingActivity, &HeadlessTransform), Without<ActivityPlan>>,
     q_activities: Query<(Entity, &Identifier, &HeadlessTransform), With<Activity>>,
 ) {
     for (entity, search, transform) in q_people.iter() {
@@ -66,19 +68,6 @@ pub fn search_activity(
     }
 }
 
-pub fn go_to_activity(
-    mut commands: Commands,
-    q_people: Query<(Entity, &Busy), Without<DestinationNode>>,
-) {
-    for (entity, busy) in q_people.iter() {
-        if let Some(location) = busy.location {
-            let node = vec2_to_node(&location);
-
-            commands.entity(entity).insert(DestinationNode(node));
-        }
-    }
-}
-
 pub fn do_activity(
     mut commands: Commands,
     time: Res<Time>,
@@ -95,14 +84,14 @@ pub fn do_activity(
         }
 
         if busy.timer.tick(time.delta()).just_finished() {
-            commands.entity(entity).remove::<Busy>();
+            commands.entity(entity).remove::<(Busy, ActivityPlan)>();
         }
     }
 }
 
 pub fn follow_routine(
     mut commands: Commands,
-    mut q_people: Query<(Entity, &mut Routine), Without<Busy>>,
+    mut q_people: Query<(Entity, &mut Routine), Without<ActivityPlan>>,
 ) {
     for (entity, mut routine) in q_people.iter_mut() {
         let mut entity = commands.entity(entity);
@@ -112,8 +101,6 @@ pub fn follow_routine(
             if let Some(item) = routine.next() {
                 if let Some(activity) = item.activity {
                     entity.insert(ActivityPlan { activity });
-                } else if let Some(busy) = &item.busy {
-                    entity.insert(busy.to_owned());
                 } else if let Some(search) = &item.search {
                     entity.insert(SearchingActivity(Identifier(search.to_string())));
                 }

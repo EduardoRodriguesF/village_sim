@@ -1,23 +1,23 @@
 use super::prelude::*;
 use crate::headless_transform::components::*;
 use crate::movement::prelude::*;
+use crate::world::prelude::*;
+
+const DESTINATION_THRESHOLD: f32 = 4.;
 
 pub fn determine_instructions(
     mut commands: Commands,
+    mut seed: ResMut<Seed>,
     map: Res<Map>,
     query: Query<
-        (Entity, &HeadlessTransform, &DestinationNode),
+        (Entity, &HeadlessTransform, &DestinationPoint),
         Without<InstructionsToDestination>,
     >,
 ) {
     for (entity, transform, destination) in query.iter() {
-        let start = vec2_to_node(&Vec2::new(transform.translation.x, transform.translation.y));
+        let start = Vec2::new(transform.translation.x, transform.translation.y);
 
-        if start == destination.0 {
-            commands.entity(entity).remove::<DestinationNode>();
-        }
-
-        let maybe_path = map.find_path(start, destination.0);
+        let maybe_path = map.find_path_by_vec2(start, destination.0, Some(&mut seed.rng));
 
         if let Some((instructions, _cost)) = maybe_path {
             commands
@@ -36,21 +36,16 @@ pub fn follow_instructions(
 
         if instructions.len() > 0 {
             let next_instruction = instructions[0];
-            let current_node =
-                vec2_to_node(&Vec2::new(transform.translation.x, transform.translation.y));
+            let current_translation = Vec2::new(transform.translation.x, transform.translation.y);
 
-            if current_node != next_instruction {
-                let next_instruction = node_to_vec2(next_instruction);
-                let current_translation =
-                    Vec2::new(transform.translation.x, transform.translation.y);
-
+            if current_translation.distance(next_instruction) > DESTINATION_THRESHOLD {
                 let dir = Vec2::normalize(next_instruction - current_translation);
                 entity.insert(MovementIntention::new(dir.x, dir.y));
             } else {
                 instructions.remove(0);
             }
         } else {
-            entity.remove::<InstructionsToDestination>();
+            entity.remove::<(DestinationPoint, InstructionsToDestination)>();
             entity.insert(MovementIntention::zero());
         }
     }
