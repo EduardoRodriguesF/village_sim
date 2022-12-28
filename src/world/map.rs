@@ -141,11 +141,17 @@ impl Map {
         )
     }
 
-    pub fn find_path_by_vec2(&self, start: Vec2, goal: Vec2) -> Option<(Vec<MapNode>, u32)> {
+    pub fn find_path_by_vec2(&self, start: Vec2, goal: Vec2) -> Option<(Vec<Vec2>, u32)> {
         let start = vec2_to_node(&start);
         let goal = vec2_to_node(&goal);
 
-        self.find_path(start, goal)
+        if let Some((nodes, cost)) = self.find_path(start, goal) {
+            let instructions: Vec<Vec2> = nodes.iter().map(|node| node_to_vec2(*node)).collect();
+
+            return Some((instructions, cost));
+        }
+
+        None
     }
 }
 

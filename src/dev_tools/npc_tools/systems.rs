@@ -179,9 +179,8 @@ pub fn trace_path(
     if let Ok((transform, instructions)) = q_tracked.get_single() {
         let mut last_step = transform.translation;
 
-        for node in instructions.iter() {
-            let vec2_node = node_to_vec2(*node);
-            let step = Vec3::new(vec2_node.x, vec2_node.y, 1.);
+        for step in instructions.iter() {
+            let step = Vec3::new(step.x, step.y, 1.);
 
             lines.line(last_step, step, 0.);
 
@@ -210,8 +209,7 @@ pub fn update_destination_text(
 ) {
     if let Ok(destination) = q_tracked.get_single() {
         if let Ok(mut text) = q_text.get_single_mut() {
-            if let Some(node) = destination.get(0) {
-                let pos = node_to_vec2(*node);
+            if let Some(pos) = destination.get(0) {
                 let x = pos.x;
                 let y = pos.y;
 

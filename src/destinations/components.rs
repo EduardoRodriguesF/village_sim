@@ -4,4 +4,4 @@ use super::prelude::*;
 pub struct DestinationPoint(pub Vec2);
 
 #[derive(Component, Deref, DerefMut)]
-pub struct InstructionsToDestination(pub Vec<MapNode>);
+pub struct InstructionsToDestination(pub Vec<Vec2>);
