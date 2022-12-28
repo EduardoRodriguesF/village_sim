@@ -9,18 +9,24 @@ impl Plugin for TimeManipulationPlugin {
 }
 
 fn control_relative_time(mut time: ResMut<Time>, keys: Res<Input<KeyCode>>) {
+    let mut new_relative = None;
+    let mut current = time.relative_speed();
     let possible_keys = vec![KeyCode::Key0, KeyCode::Key1, KeyCode::Key2, KeyCode::Key3];
 
     for (idx, key) in possible_keys.iter().enumerate() {
         if keys.just_pressed(*key) {
-            time.set_relative_speed(idx as f32);
+            current = idx as f32;
+            new_relative = Some(current);
         }
     }
 
-    let current = time.relative_speed();
     if keys.just_pressed(KeyCode::Period) {
-        time.set_relative_speed(current + 0.1);
+        new_relative = Some(current + 0.1);
     } else if keys.just_pressed(KeyCode::Comma) {
-        time.set_relative_speed((current - 0.1).max(0.));
+        new_relative = Some((current - 0.1).max(0.));
+    }
+
+    if let Some(value) = new_relative {
+        time.set_relative_speed(value);
     }
 }
