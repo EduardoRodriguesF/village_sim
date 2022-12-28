@@ -1,11 +1,13 @@
 use super::prelude::*;
 use crate::headless_transform::components::*;
 use crate::movement::prelude::*;
+use crate::world::prelude::*;
 
 const DESTINATION_THRESHOLD: f32 = 4.;
 
 pub fn determine_instructions(
     mut commands: Commands,
+    mut seed: ResMut<Seed>,
     map: Res<Map>,
     query: Query<
         (Entity, &HeadlessTransform, &DestinationPoint),
@@ -15,7 +17,7 @@ pub fn determine_instructions(
     for (entity, transform, destination) in query.iter() {
         let start = Vec2::new(transform.translation.x, transform.translation.y);
 
-        let maybe_path = map.find_path_by_vec2(start, destination.0);
+        let maybe_path = map.find_path_by_vec2(start, destination.0, Some(&mut seed.rng));
 
         if let Some((instructions, _cost)) = maybe_path {
             commands

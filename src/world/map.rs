@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 use pathfinding::prelude::astar;
+use rand::prelude::*;
 
 const TILE_SIZE: u8 = 16;
 
@@ -141,12 +142,41 @@ impl Map {
         )
     }
 
-    pub fn find_path_by_vec2(&self, start: Vec2, goal: Vec2) -> Option<(Vec<Vec2>, u32)> {
+    pub fn find_path_by_vec2(
+        &self,
+        start: Vec2,
+        goal: Vec2,
+        rng: Option<&mut StdRng>,
+    ) -> Option<(Vec<Vec2>, u32)> {
         let start = Self::vec2_to_node(&start);
         let goal = Self::vec2_to_node(&goal);
 
         if let Some((nodes, cost)) = self.find_path(start, goal) {
-            let instructions: Vec<Vec2> = nodes.iter().map(|node| Self::node_to_vec2(*node)).collect();
+            let mut instructions: Vec<Vec2> =
+                nodes.iter().map(|node| Self::node_to_vec2(*node)).collect();
+
+            if let Some(rng) = rng {
+                let variation = TILE_SIZE as f32 / 2.;
+                let variation_range = -variation..variation;
+                let mut last_step = instructions[0];
+
+                instructions = instructions.iter_mut().map(|mut step| {
+                    let x_range = (last_step.x - variation)..(last_step.x + variation);
+                    let y_range = (last_step.y - variation)..(last_step.y + variation);
+
+                    if !x_range.contains(&step.x) {
+                        step.x += rng.gen_range(variation_range.clone());
+                    }
+
+                    if !y_range.contains(&step.y) {
+                        step.y += rng.gen_range(variation_range.clone());
+                    }
+
+                    last_step = *step;
+
+                    *step
+                }).collect();
+            }
 
             return Some((instructions, cost));
         }
