@@ -68,13 +68,11 @@ pub fn search_activity(
 
 pub fn go_to_activity(
     mut commands: Commands,
-    q_people: Query<(Entity, &Busy), Without<DestinationNode>>,
+    q_people: Query<(Entity, &Busy), Without<DestinationPoint>>,
 ) {
     for (entity, busy) in q_people.iter() {
         if let Some(location) = busy.location {
-            let node = vec2_to_node(&location);
-
-            commands.entity(entity).insert(DestinationNode(node));
+            commands.entity(entity).insert(DestinationPoint(location));
         }
     }
 }

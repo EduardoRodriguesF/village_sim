@@ -6,18 +6,18 @@ pub fn determine_instructions(
     mut commands: Commands,
     map: Res<Map>,
     query: Query<
-        (Entity, &HeadlessTransform, &DestinationNode),
+        (Entity, &HeadlessTransform, &DestinationPoint),
         Without<InstructionsToDestination>,
     >,
 ) {
     for (entity, transform, destination) in query.iter() {
-        let start = vec2_to_node(&Vec2::new(transform.translation.x, transform.translation.y));
+        let start = Vec2::new(transform.translation.x, transform.translation.y);
 
-        if start == destination.0 {
-            commands.entity(entity).remove::<DestinationNode>();
+        if start.distance(destination.0) < 4. {
+            commands.entity(entity).remove::<DestinationPoint>();
         }
 
-        let maybe_path = map.find_path(start, destination.0);
+        let maybe_path = map.find_path_by_vec2(start, destination.0);
 
         if let Some((instructions, _cost)) = maybe_path {
             commands
