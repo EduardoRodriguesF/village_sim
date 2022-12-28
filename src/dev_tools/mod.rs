@@ -3,6 +3,7 @@ pub mod npc_counting;
 pub mod npc_tools;
 pub mod prelude;
 pub mod seed_info;
+pub mod time_manipulation;
 
 use bevy_prototype_debug_lines::DebugLinesPlugin;
 use prelude::*;
@@ -16,6 +17,7 @@ impl PluginGroup for DevToolsPlugins {
             .add(SeedInfoPlugin)
             .add(NpcToolsPlugin)
             .add(NpcCountingPlugin)
+            .add(TimeManipulationPlugin)
             .add(FrameTimeDiagnosticsPlugin::default())
             .add(DebugLinesPlugin::default())
     }
