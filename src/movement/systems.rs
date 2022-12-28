@@ -1,9 +1,10 @@
 use super::prelude::*;
 use crate::headless_transform::components::*;
 use crate::world::prelude::*;
+use crate::FPS;
 
 pub fn apply_velocity(time: Res<Time>, mut query: Query<(&mut HeadlessTransform, &Velocity)>) {
-    let delta = time.delta_seconds() * 60.;
+    let delta = time.delta_seconds() * FPS;
 
     for (mut transform, velocity) in query.iter_mut() {
         transform.translation.x += velocity.x * delta;
