@@ -10,7 +10,6 @@ pub fn apply_activity_plan(
 ) {
     for (entity, plan, transform) in q_people.iter() {
         let mut entity = commands.entity(entity);
-        entity.remove::<ActivityPlan>();
 
         if let Ok((activity, maybe_activity_transform)) = q_activities.get(plan.activity) {
             let location = match maybe_activity_transform {
@@ -29,7 +28,7 @@ pub fn apply_activity_plan(
 pub fn search_activity(
     mut commands: Commands,
     mut seed: ResMut<Seed>,
-    q_people: Query<(Entity, &SearchingActivity, &HeadlessTransform), Without<Busy>>,
+    q_people: Query<(Entity, &SearchingActivity, &HeadlessTransform), Without<ActivityPlan>>,
     q_activities: Query<(Entity, &Identifier, &HeadlessTransform), With<Activity>>,
 ) {
     for (entity, search, transform) in q_people.iter() {
@@ -85,14 +84,14 @@ pub fn do_activity(
         }
 
         if busy.timer.tick(time.delta()).just_finished() {
-            commands.entity(entity).remove::<Busy>();
+            commands.entity(entity).remove::<(Busy, ActivityPlan)>();
         }
     }
 }
 
 pub fn follow_routine(
     mut commands: Commands,
-    mut q_people: Query<(Entity, &mut Routine), Without<Busy>>,
+    mut q_people: Query<(Entity, &mut Routine), Without<ActivityPlan>>,
 ) {
     for (entity, mut routine) in q_people.iter_mut() {
         let mut entity = commands.entity(entity);
