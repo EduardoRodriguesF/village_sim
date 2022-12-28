@@ -160,22 +160,25 @@ impl Map {
                 let variation_range = -variation..variation;
                 let mut last_step = instructions[0];
 
-                instructions = instructions.iter_mut().map(|mut step| {
-                    let x_range = (last_step.x - variation)..(last_step.x + variation);
-                    let y_range = (last_step.y - variation)..(last_step.y + variation);
+                instructions = instructions
+                    .iter_mut()
+                    .map(|mut step| {
+                        let x_range = (last_step.x - variation)..(last_step.x + variation);
+                        let y_range = (last_step.y - variation)..(last_step.y + variation);
 
-                    if !x_range.contains(&step.x) {
-                        step.x += rng.gen_range(variation_range.clone());
-                    }
+                        if !x_range.contains(&step.x) {
+                            step.x += rng.gen_range(variation_range.clone());
+                        }
 
-                    if !y_range.contains(&step.y) {
-                        step.y += rng.gen_range(variation_range.clone());
-                    }
+                        if !y_range.contains(&step.y) {
+                            step.y += rng.gen_range(variation_range.clone());
+                        }
 
-                    last_step = *step;
+                        last_step = *step;
 
-                    *step
-                }).collect();
+                        *step
+                    })
+                    .collect();
             }
 
             return Some((instructions, cost));
