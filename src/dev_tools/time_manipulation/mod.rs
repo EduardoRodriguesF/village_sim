@@ -27,6 +27,7 @@ fn control_relative_time(mut time: ResMut<Time>, keys: Res<Input<KeyCode>>) {
     }
 
     if let Some(value) = new_relative {
+        info!("relative speed: {}", value);
         time.set_relative_speed(value);
     }
 }
