@@ -2,10 +2,12 @@ use super::prelude::*;
 use crate::headless_transform::components::*;
 use crate::world::prelude::*;
 
-pub fn apply_velocity(mut query: Query<(&mut HeadlessTransform, &Velocity)>) {
+pub fn apply_velocity(time: Res<Time>, mut query: Query<(&mut HeadlessTransform, &Velocity)>) {
+    let delta = time.delta_seconds() * 60.;
+
     for (mut transform, velocity) in query.iter_mut() {
-        transform.translation.x += velocity.x;
-        transform.translation.y += velocity.y;
+        transform.translation.x += velocity.x * delta;
+        transform.translation.y += velocity.y * delta;
     }
 }
 
