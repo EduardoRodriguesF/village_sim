@@ -15,10 +15,6 @@ pub fn determine_instructions(
     for (entity, transform, destination) in query.iter() {
         let start = Vec2::new(transform.translation.x, transform.translation.y);
 
-        if start.distance(destination.0) < DESTINATION_THRESHOLD {
-            commands.entity(entity).remove::<DestinationPoint>();
-        }
-
         let maybe_path = map.find_path_by_vec2(start, destination.0);
 
         if let Some((instructions, _cost)) = maybe_path {
@@ -47,7 +43,7 @@ pub fn follow_instructions(
                 instructions.remove(0);
             }
         } else {
-            entity.remove::<InstructionsToDestination>();
+            entity.remove::<(DestinationPoint, InstructionsToDestination)>();
             entity.insert(MovementIntention::zero());
         }
     }
