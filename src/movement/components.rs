@@ -33,3 +33,15 @@ impl MovementIntention {
         Self::new(0., 0.)
     }
 }
+
+#[derive(Component, Default)]
+pub struct Collider {
+    pub size: Vec2,
+    pub anchor: Anchor,
+}
+
+impl Collider {
+    pub fn new(size: Vec2, anchor: Anchor) -> Self {
+        Self { size, anchor }
+    }
+}
