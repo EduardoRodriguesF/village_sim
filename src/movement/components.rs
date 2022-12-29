@@ -13,7 +13,7 @@ impl Velocity {
         Self { x, y, ..default() }
     }
 
-    pub fn into_vec2(&self) -> Vec2 {
+    pub fn as_vec2(&self) -> Vec2 {
         Vec2::new(self.x, self.y)
     }
 }

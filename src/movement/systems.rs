@@ -41,8 +41,8 @@ pub fn dynamic_collision(mut q_colliders: Query<(&mut Velocity, &HeadlessTransfo
         let (mut a1_velocity, a1_transform, a1_collider) = a1;
         let (mut a2_velocity, a2_transform, a2_collider) = a2;
 
-        let a1_projection = to_vec2(&a1_transform.translation) + a1_velocity.into_vec2();
-        let a2_projection = to_vec2(&a2_transform.translation) + a2_velocity.into_vec2();
+        let a1_projection = to_vec2(&a1_transform.translation) + a1_velocity.as_vec2();
+        let a2_projection = to_vec2(&a2_transform.translation) + a2_velocity.as_vec2();
 
         if collide(
             to_vec3(&a1_projection),
@@ -53,7 +53,7 @@ pub fn dynamic_collision(mut q_colliders: Query<(&mut Velocity, &HeadlessTransfo
         .is_some()
         {
             let dir = Vec2::normalize(a2_projection - a1_projection);
-            let mut forces = Vec2::normalize(a2_velocity.into_vec2() - a1_velocity.into_vec2());
+            let mut forces = Vec2::normalize(a2_velocity.as_vec2() - a1_velocity.as_vec2());
 
             if forces.is_nan() {
                 forces = Vec2::splat(0.);
