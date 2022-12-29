@@ -54,11 +54,15 @@ pub fn dynamic_collision(mut q_colliders: Query<(&mut Velocity, &HeadlessTransfo
         )
         .is_some()
         {
-            let dir = Vec2::normalize(a2_projection - a1_projection);
+            let mut dir = Vec2::normalize(a2_projection - a1_projection);
             let mut forces = Vec2::normalize(a2_velocity.as_vec2() - a1_velocity.as_vec2());
 
             if forces.is_nan() {
                 forces = Vec2::splat(0.);
+            }
+
+            if dir.is_nan() {
+                dir = Vec2::splat(0.);
             }
 
             a1_velocity.one_time_speed = Some((dir - forces) * -1.);
