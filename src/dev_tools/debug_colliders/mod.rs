@@ -18,7 +18,7 @@ fn draw_colliders(
     q_colliders: Query<(&HeadlessTransform, &Collider)>,
 ) {
     for (transform, collider) in q_colliders.iter() {
-        let pos = to_vec2(&transform.translation) + collider.offset();
+        let pos = transform.translation.truncate() + collider.offset();
         draw_rectangle(&mut lines, &pos, &collider.size, BOX_COLOR);
     }
 }

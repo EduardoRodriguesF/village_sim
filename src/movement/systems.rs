@@ -46,14 +46,14 @@ pub fn dynamic_collision(mut q_colliders: Query<(&mut Velocity, &HeadlessTransfo
         }
 
         let a1_projection =
-            to_vec2(&a1_transform.translation) + a1_velocity.as_vec2() + a1_collider.offset();
+            a1_transform.translation.truncate() + a1_velocity.as_vec2() + a1_collider.offset();
         let a2_projection =
-            to_vec2(&a2_transform.translation) + a2_velocity.as_vec2() + a2_collider.offset();
+            a2_transform.translation.truncate() + a2_velocity.as_vec2() + a2_collider.offset();
 
         if collide(
-            to_vec3(&a1_projection),
+            a1_projection.extend(1.),
             a1_collider.size,
-            to_vec3(&a2_projection),
+            a2_projection.extend(1.),
             a2_collider.size,
         )
         .is_some()

@@ -26,7 +26,7 @@ pub fn spawn_entities(mut commands: Commands, map: Res<Map>) {
         };
 
         if let Some(mut entity_commands) = maybe_entity_commands {
-            let pos = to_vec3(&entity.position);
+            let pos = entity.position.extend(1.);
             let transform = HeadlessTransform(Transform::from_translation(pos));
 
             entity_commands.insert((Identifier(entity.identifier.to_owned()), transform));

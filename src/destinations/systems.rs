@@ -15,7 +15,7 @@ pub fn determine_instructions(
     >,
 ) {
     for (entity, transform, destination) in query.iter() {
-        let start = to_vec2(&transform.translation);
+        let start = transform.translation.truncate();
 
         let maybe_path = map.find_path_by_vec2(start, destination.0, Some(&mut seed.rng));
 
@@ -36,7 +36,7 @@ pub fn follow_instructions(
 
         if instructions.len() > 0 {
             let next_instruction = instructions[0];
-            let current_translation = to_vec2(&transform.translation);
+            let current_translation = transform.translation.truncate();
 
             if current_translation.distance(next_instruction) > DESTINATION_THRESHOLD {
                 let dir = Vec2::normalize_or_zero(next_instruction - current_translation);

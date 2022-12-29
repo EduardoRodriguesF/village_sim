@@ -26,7 +26,7 @@ fn update_cursor_position(
 
         cursor.relative_position = match q_camera.get_single() {
             Ok(camera_transform) => {
-                let camera_pos = to_vec2(&camera_transform.translation);
+                let camera_pos = camera_transform.translation.truncate();
                 let screen = Vec2::new(SCREEN_WIDTH as f32, SCREEN_HEIGHT as f32);
 
                 Some(cursor_pos + camera_pos - screen / 2.)
