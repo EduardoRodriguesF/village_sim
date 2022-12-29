@@ -45,3 +45,9 @@ impl Collider {
         Self { size, anchor }
     }
 }
+
+impl Collider {
+    pub fn offset(&self) -> Vec2 {
+        self.size * self.anchor.as_vec()
+    }
+}

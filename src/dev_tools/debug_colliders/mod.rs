@@ -13,10 +13,12 @@ impl Plugin for DebugCollidersPlugin {
     }
 }
 
-fn draw_colliders(mut lines: ResMut<DebugLines>, q_colliders: Query<(&HeadlessTransform, &Collider)>) {
+fn draw_colliders(
+    mut lines: ResMut<DebugLines>,
+    q_colliders: Query<(&HeadlessTransform, &Collider)>,
+) {
     for (transform, collider) in q_colliders.iter() {
-        let pos = to_vec2(&transform.translation);
+        let pos = to_vec2(&transform.translation) + collider.offset();
         draw_rectangle(&mut lines, &pos, &collider.size, BOX_COLOR);
     }
 }
-
