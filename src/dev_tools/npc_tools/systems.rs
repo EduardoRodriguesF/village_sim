@@ -166,6 +166,7 @@ pub fn create_npc(
                 },
                 HeadlessTransform(Transform::from_xyz(cursor_pos.x, cursor_pos.y, 1.)),
                 Velocity::new(0., 0.),
+                Collider::new(Vec2::new(6., 6.), bevy::sprite::Anchor::BottomCenter),
             ));
         }
     }
