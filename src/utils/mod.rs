@@ -1,3 +1,6 @@
+pub mod prelude;
+pub mod shapes;
+
 use bevy::prelude::*;
 
 pub fn to_vec3(vec2: &Vec2) -> Vec3 {

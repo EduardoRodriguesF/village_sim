@@ -62,6 +62,7 @@ pub fn setup(mut commands: Commands, mut seed: ResMut<Seed>) {
             },
             HeadlessTransform(Transform::from_xyz(x_pos, y_pos, 1.)),
             Velocity::new(0., 0.),
+            Collider::new(Vec2::new(6., 6.), bevy::sprite::Anchor::BottomCenter),
         ));
     }
 }

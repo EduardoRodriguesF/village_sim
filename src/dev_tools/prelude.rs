@@ -1,4 +1,5 @@
 pub use super::benchmark::*;
+pub use super::debug_colliders::*;
 pub use super::npc_counting::*;
 pub use super::npc_tools::*;
 pub use super::seed_info::*;

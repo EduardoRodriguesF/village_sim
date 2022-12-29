@@ -9,7 +9,7 @@ mod world;
 
 mod prelude {
     pub use crate::headless_transform::components::*;
-    pub use crate::utils::*;
+    pub use crate::utils::prelude::*;
     pub use bevy::prelude::*;
 
     pub const FPS: f32 = 60.;
