@@ -39,7 +39,7 @@ pub fn follow_instructions(
             let current_translation = to_vec2(&transform.translation);
 
             if current_translation.distance(next_instruction) > DESTINATION_THRESHOLD {
-                let dir = Vec2::normalize(next_instruction - current_translation);
+                let dir = Vec2::normalize_or_zero(next_instruction - current_translation);
                 entity.insert(MovementIntention::new(dir.x, dir.y));
             } else {
                 instructions.remove(0);
