@@ -54,6 +54,13 @@ impl RoutineItem {
             ..default()
         }
     }
+
+    pub fn exit() -> RoutineItem {
+        RoutineItem {
+            search: Some("Entrance".to_string()),
+            ..default()
+        }
+    }
 }
 
 #[derive(Component, Default)]

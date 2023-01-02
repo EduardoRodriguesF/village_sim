@@ -71,9 +71,10 @@ pub fn search_activity(
 pub fn do_activity(
     mut commands: Commands,
     time: Res<Time>,
-    mut q_people: Query<(Entity, &HeadlessTransform, &mut Busy)>,
+    mut q_people: Query<(Entity, &HeadlessTransform, &mut Busy, &ActivityPlan)>,
+    q_activities: Query<&Identifier, With<Activity>>,
 ) {
-    for (entity, transform, mut busy) in q_people.iter_mut() {
+    for (entity, transform, mut busy, plan) in q_people.iter_mut() {
         let position = transform.translation.truncate();
 
         // Do not consider as doing activity if too far away.
@@ -84,7 +85,14 @@ pub fn do_activity(
         }
 
         if busy.timer.tick(time.delta()).just_finished() {
-            commands.entity(entity).remove::<(Busy, ActivityPlan)>();
+            let mut entity = commands.entity(entity);
+            entity.remove::<(Busy, ActivityPlan)>();
+
+            if let Ok(identifier) = q_activities.get_component::<Identifier>(plan.activity) {
+                if identifier == &Identifier("Entrance".to_string()) {
+                    entity.despawn();
+                }
+            }
         }
     }
 }

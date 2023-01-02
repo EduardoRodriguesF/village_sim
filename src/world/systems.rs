@@ -22,6 +22,7 @@ pub fn spawn_entities(mut commands: Commands, map: Res<Map>) {
                     ..default()
                 },
             ))),
+            "Entrance" => Some(commands.spawn(Activity::default())),
             _ => None,
         };
 
@@ -56,7 +57,7 @@ pub fn setup(mut commands: Commands, mut seed: ResMut<Seed>) {
                 speed: seed.rng.gen_range(1.0..1.7),
             },
             Routine {
-                activities: vec![RoutineItem::from_search("MarketTent")],
+                activities: vec![RoutineItem::from_search("MarketTent"), RoutineItem::exit()],
                 is_loop: true,
                 ..default()
             },
