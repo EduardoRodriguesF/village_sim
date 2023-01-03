@@ -4,3 +4,8 @@ use super::prelude::*;
 pub struct NpcStats {
     pub speed: f32,
 }
+
+#[derive(Component)]
+pub struct Entrance {
+    pub area: Rect
+}

@@ -22,9 +22,14 @@ pub fn spawn_entities(mut commands: Commands, map: Res<Map>) {
                     ..default()
                 },
             ))),
-            "Entrance" => Some(commands.spawn(Activity {
-                avg_time_in_seconds: 1.,
-            })),
+            "Entrance" => Some(commands.spawn((
+                Activity {
+                    avg_time_in_seconds: 1.,
+                },
+                Entrance {
+                    area: Rect::new(0., 0., 16., 16.),
+                },
+            ))),
             _ => None,
         };
 
@@ -41,24 +46,14 @@ pub fn populate(
     mut commands: Commands,
     mut seed: ResMut<Seed>,
     q_npcs: Query<Entity, With<NpcStats>>,
-    q_activities: Query<(&Identifier, &HeadlessTransform), With<Activity>>,
+    q_entrances: Query<&HeadlessTransform, With<Entrance>>,
 ) {
     let population = q_npcs.iter().len() as u16;
+    let entrances = q_entrances.iter().collect::<Vec<&HeadlessTransform>>();
 
     if population >= MAX_NPCS {
         return;
     }
-
-    let entrances = q_activities
-        .iter()
-        .filter_map(|(identifier, transform)| {
-            if *identifier == Identifier("Entrance".to_string()) {
-                return Some(*transform);
-            }
-
-            None
-        })
-        .collect::<Vec<HeadlessTransform>>();
 
     for _ in population..MAX_NPCS {
         let r: f32 = seed.rng.gen();
@@ -87,7 +82,7 @@ pub fn populate(
                 is_loop: true,
                 ..default()
             },
-            *pos,
+            **pos,
             Velocity::new(0., 0.),
             Collider::new(Vec2::new(6., 6.), bevy::sprite::Anchor::BottomCenter),
         ));
