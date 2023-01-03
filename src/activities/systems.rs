@@ -4,6 +4,7 @@ use rand::distributions::WeightedIndex;
 use rand::prelude::*;
 
 pub fn apply_activity_plan(
+    mut seed: ResMut<Seed>,
     mut commands: Commands,
     q_people: Query<(Entity, &ActivityPlan, &HeadlessTransform), Without<Busy>>,
     q_activities: Query<(&Activity, Option<&HeadlessTransform>)>,
@@ -13,7 +14,16 @@ pub fn apply_activity_plan(
 
         if let Ok((activity, maybe_activity_transform)) = q_activities.get(plan.activity) {
             let location = match maybe_activity_transform {
-                Some(transform) => transform.translation.truncate(),
+                Some(transform) => {
+                    let pos = transform.translation.truncate();
+                    let half_size = activity.area.half_size();
+                    let deviation = Vec2::new(
+                        seed.rng.gen_range(-half_size.x..half_size.x),
+                        seed.rng.gen_range(-half_size.y..half_size.y),
+                    );
+
+                    pos + deviation
+                }
                 None => transform.translation.truncate(),
             };
 
