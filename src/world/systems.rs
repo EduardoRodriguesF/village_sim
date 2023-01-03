@@ -3,7 +3,7 @@ use crate::activities::prelude::*;
 use crate::movement::prelude::*;
 use rand::prelude::*;
 
-const POSITION_OFFSET_MULTIPLIER: f32 = 300.;
+const MAX_NPCS: u16 = 50;
 
 pub fn spawn_entities(mut commands: Commands, map: Res<Map>) {
     for entity in map.entities.iter() {
@@ -37,13 +37,37 @@ pub fn spawn_entities(mut commands: Commands, map: Res<Map>) {
     }
 }
 
-pub fn setup(mut commands: Commands, mut seed: ResMut<Seed>) {
-    for _ in 0..20 {
+pub fn populate(
+    mut commands: Commands,
+    mut seed: ResMut<Seed>,
+    q_npcs: Query<Entity, With<NpcStats>>,
+    q_activities: Query<(&Identifier, &HeadlessTransform), With<Activity>>,
+) {
+    let population = q_npcs.iter().len() as u16;
+
+    if population >= MAX_NPCS {
+        return;
+    }
+
+    let entrances = q_activities
+        .iter()
+        .filter_map(|(identifier, transform)| {
+            if *identifier == Identifier("Entrance".to_string()) {
+                return Some(*transform);
+            }
+
+            None
+        })
+        .collect::<Vec<HeadlessTransform>>();
+
+    for _ in population..MAX_NPCS {
         let r: f32 = seed.rng.gen();
         let g: f32 = seed.rng.gen();
         let b: f32 = seed.rng.gen();
-        let x_pos = seed.rng.gen::<f32>() * POSITION_OFFSET_MULTIPLIER;
-        let y_pos = seed.rng.gen::<f32>() * POSITION_OFFSET_MULTIPLIER;
+
+        let pos = entrances
+            .get(seed.rng.gen_range(0..entrances.len()))
+            .unwrap();
 
         commands.spawn((
             SpriteBundle {
@@ -63,7 +87,7 @@ pub fn setup(mut commands: Commands, mut seed: ResMut<Seed>) {
                 is_loop: true,
                 ..default()
             },
-            HeadlessTransform(Transform::from_xyz(x_pos, y_pos, 1.)),
+            *pos,
             Velocity::new(0., 0.),
             Collider::new(Vec2::new(6., 6.), bevy::sprite::Anchor::BottomCenter),
         ));
