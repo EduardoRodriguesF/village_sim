@@ -4,11 +4,13 @@ mod destinations;
 mod dev_tools;
 mod headless_transform;
 mod movement;
+mod safe_despawn;
 pub mod utils;
 mod world;
 
 mod prelude {
     pub use crate::headless_transform::components::*;
+    pub use crate::safe_despawn::ScheduledDespawn;
     pub use crate::utils::prelude::*;
     pub use bevy::prelude::*;
 
@@ -25,6 +27,7 @@ use dev_tools::DevToolsPlugins;
 use headless_transform::HeadlessPositionPlugin;
 use movement::MovementPlugin;
 use prelude::*;
+use safe_despawn::SafeDespawnPlugin;
 use world::WorldPlugin;
 
 fn main() {
@@ -45,6 +48,7 @@ fn main() {
     .add_plugin(DestinationsPlugin)
     .add_plugin(ActivitiesPlugin)
     .add_plugin(CursorPlugin)
+    .add_plugin(SafeDespawnPlugin)
     .add_startup_system(setup)
     .add_system(camera_movement);
 

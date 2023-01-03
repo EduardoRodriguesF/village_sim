@@ -104,7 +104,7 @@ pub fn do_activity(
 
             if let Ok(identifier) = q_activities.get_component::<Identifier>(plan.activity) {
                 if identifier == &Identifier("Entrance".to_string()) {
-                    entity.despawn();
+                    entity.insert(ScheduledDespawn);
                 }
             }
         }
