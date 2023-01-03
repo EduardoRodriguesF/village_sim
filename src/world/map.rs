@@ -1,4 +1,4 @@
-use bevy::prelude::*;
+use super::prelude::*;
 use pathfinding::prelude::astar;
 use rand::prelude::*;
 
@@ -91,7 +91,7 @@ impl Map {
         }
     }
 
-    pub fn get_successors(&self, node: &MapNode) -> Vec<Successor> {
+    pub fn get_successors(&self, node: &MapNode, npc_stats: &NpcStats) -> Vec<Successor> {
         let mut successors = Vec::new();
         for dx in -1i16..=1 {
             for dy in -1i16..=1 {
@@ -110,9 +110,11 @@ impl Map {
 
                 let map_value = self.data[next_node.1 as usize][next_node.0 as usize];
                 if let Some(value) = map_value {
+                    let cost = (value.path_cost + (value.fear_cost - npc_stats.courage)) as u32;
+
                     successors.push(Successor {
                         node: next_node,
-                        cost: value.path_cost as u32,
+                        cost,
                     });
                 }
             }
@@ -121,11 +123,16 @@ impl Map {
         successors
     }
 
-    pub fn find_path(&self, start: MapNode, goal: MapNode) -> Option<(Vec<MapNode>, u32)> {
+    pub fn find_path(
+        &self,
+        start: MapNode,
+        goal: MapNode,
+        npc_stats: &NpcStats,
+    ) -> Option<(Vec<MapNode>, u32)> {
         astar(
             &start,
             |p| {
-                self.get_successors(p)
+                self.get_successors(p, &npc_stats)
                     .iter()
                     .map(|s| (s.node, s.cost))
                     .collect::<Vec<_>>()
@@ -139,12 +146,13 @@ impl Map {
         &self,
         start: Vec2,
         goal: Vec2,
+        npc_stats: &NpcStats,
         rng: Option<&mut StdRng>,
     ) -> Option<(Vec<Vec2>, u32)> {
         let start = Self::vec2_to_node(&start);
         let goal = Self::vec2_to_node(&goal);
 
-        if let Some((nodes, cost)) = self.find_path(start, goal) {
+        if let Some((nodes, cost)) = self.find_path(start, goal, npc_stats) {
             let mut instructions: Vec<Vec2> =
                 nodes.iter().map(|node| Self::node_to_vec2(*node)).collect();
 
