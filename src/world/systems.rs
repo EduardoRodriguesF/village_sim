@@ -27,7 +27,7 @@ pub fn spawn_entities(mut commands: Commands, map: Res<Map>) {
                     avg_time_in_seconds: 1.,
                 },
                 Entrance {
-                    area: Rect::new(0., 0., 16., 16.),
+                    area: Rect::new(0., 0., entity.width as f32, entity.height as f32),
                 },
             ))),
             _ => None,
@@ -66,11 +66,12 @@ pub fn populate(
             .get(seed.rng.gen_range(0..entrances.len()))
             .unwrap();
 
-        let pos = pos.0.translation + Vec3::new(
-            seed.rng.gen_range(0.0..entrance.area.width()),
-            seed.rng.gen_range(0.0..entrance.area.height()),
-            0.,
-        );
+        let pos = pos.0.translation
+            + Vec3::new(
+                seed.rng.gen_range(0.0..entrance.area.width()),
+                seed.rng.gen_range(0.0..entrance.area.height()),
+                0.,
+            );
 
         commands.spawn((
             SpriteBundle {
