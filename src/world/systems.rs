@@ -46,10 +46,12 @@ pub fn populate(
     mut commands: Commands,
     mut seed: ResMut<Seed>,
     q_npcs: Query<Entity, With<NpcStats>>,
-    q_entrances: Query<&HeadlessTransform, With<Entrance>>,
+    q_entrances: Query<(&HeadlessTransform, &Entrance)>,
 ) {
     let population = q_npcs.iter().len() as u16;
-    let entrances = q_entrances.iter().collect::<Vec<&HeadlessTransform>>();
+    let entrances = q_entrances
+        .iter()
+        .collect::<Vec<(&HeadlessTransform, &Entrance)>>();
 
     if population >= MAX_NPCS {
         return;
@@ -60,9 +62,15 @@ pub fn populate(
         let g: f32 = seed.rng.gen();
         let b: f32 = seed.rng.gen();
 
-        let pos = entrances
+        let (pos, entrance) = entrances
             .get(seed.rng.gen_range(0..entrances.len()))
             .unwrap();
+
+        let pos = pos.0.translation + Vec3::new(
+            seed.rng.gen_range(0.0..entrance.area.width()),
+            seed.rng.gen_range(0.0..entrance.area.height()),
+            0.,
+        );
 
         commands.spawn((
             SpriteBundle {
@@ -82,7 +90,7 @@ pub fn populate(
                 is_loop: true,
                 ..default()
             },
-            **pos,
+            HeadlessTransform(Transform::from_translation(pos)),
             Velocity::new(0., 0.),
             Collider::new(Vec2::new(6., 6.), bevy::sprite::Anchor::BottomCenter),
         ));
