@@ -3,7 +3,7 @@ use crate::activities::prelude::*;
 use crate::movement::prelude::*;
 use rand::prelude::*;
 
-const MAX_NPCS: u16 = 50;
+const MAX_NPCS: u16 = 100;
 
 pub fn spawn_entities(mut commands: Commands, map: Res<Map>) {
     for entity in map.entities.iter() {
