@@ -6,6 +6,4 @@ pub struct NpcStats {
 }
 
 #[derive(Component)]
-pub struct Entrance {
-    pub area: Rect
-}
+pub struct Entrance;

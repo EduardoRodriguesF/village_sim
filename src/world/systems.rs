@@ -7,10 +7,13 @@ const MAX_NPCS: u16 = 50;
 
 pub fn spawn_entities(mut commands: Commands, map: Res<Map>) {
     for entity in map.entities.iter() {
+        let area = Rect::new(0., 0., entity.width as f32, entity.height as f32);
+
         let maybe_entity_commands = match entity.identifier.as_str() {
             "MarketTent" => Some(commands.spawn((
                 Activity {
                     avg_time_in_seconds: 12.,
+                    area,
                 },
                 SpriteBundle {
                     sprite: Sprite {
@@ -25,10 +28,9 @@ pub fn spawn_entities(mut commands: Commands, map: Res<Map>) {
             "Entrance" => Some(commands.spawn((
                 Activity {
                     avg_time_in_seconds: 1.,
+                    area,
                 },
-                Entrance {
-                    area: Rect::new(0., 0., entity.width as f32, entity.height as f32),
-                },
+                Entrance,
             ))),
             _ => None,
         };
@@ -46,12 +48,12 @@ pub fn populate(
     mut commands: Commands,
     mut seed: ResMut<Seed>,
     q_npcs: Query<Entity, With<NpcStats>>,
-    q_entrances: Query<(&HeadlessTransform, &Entrance)>,
+    q_entrances: Query<(&HeadlessTransform, &Activity), With<Entrance>>,
 ) {
     let population = q_npcs.iter().len() as u16;
     let entrances = q_entrances
         .iter()
-        .collect::<Vec<(&HeadlessTransform, &Entrance)>>();
+        .collect::<Vec<(&HeadlessTransform, &Activity)>>();
 
     if population >= MAX_NPCS {
         return;
