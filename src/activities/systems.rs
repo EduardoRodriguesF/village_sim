@@ -71,7 +71,10 @@ pub fn search_activity(
 pub fn do_activity(
     mut commands: Commands,
     time: Res<Time>,
-    mut q_people: Query<(Entity, &HeadlessTransform, &mut Busy, &ActivityPlan)>,
+    mut q_people: Query<
+        (Entity, &HeadlessTransform, &mut Busy, &ActivityPlan),
+        Without<DestinationPoint>,
+    >,
     q_activities: Query<&Identifier, With<Activity>>,
 ) {
     for (entity, transform, mut busy, plan) in q_people.iter_mut() {
@@ -80,6 +83,7 @@ pub fn do_activity(
         // Do not consider as doing activity if too far away.
         if let Some(location) = busy.location {
             if position.distance(location) > 16. {
+                commands.entity(entity).insert(DestinationPoint(location));
                 continue;
             }
         }
