@@ -5,7 +5,7 @@ use rand::prelude::*;
 #[derive(Component, Debug, Default)]
 pub struct NpcStats {
     pub speed: f32,
-    pub courage: u8,
+    pub guts: u8,
 }
 
 impl NpcStats {
@@ -17,7 +17,7 @@ impl NpcStats {
 
         Self {
             speed: rng.gen_range(1.0..1.3),
-            courage: values[dist.sample(rng)],
+            guts: values[dist.sample(rng)],
         }
     }
 }
