@@ -22,7 +22,9 @@ pub fn spawn_entities(mut commands: Commands, map: Res<Map>) {
                     ..default()
                 },
             ))),
-            "Entrance" => Some(commands.spawn(Activity::default())),
+            "Entrance" => Some(commands.spawn(Activity {
+                avg_time_in_seconds: 1.,
+            })),
             _ => None,
         };
 
