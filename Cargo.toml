@@ -3,7 +3,12 @@ name = "village_sim"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+# Enable only a small amount of optimization in debug mode
+[profile.dev]
+opt-level = 1
+
+[profile.release]
+lto = "thin"
 
 [dependencies]
 bevy = "0.9.1"
