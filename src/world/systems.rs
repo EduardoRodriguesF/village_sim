@@ -87,6 +87,7 @@ pub fn populate(
             },
             NpcStats {
                 speed: seed.rng.gen_range(1.0..1.7),
+                ..default()
             },
             Routine {
                 activities: vec![RoutineItem::from_search("MarketTent"), RoutineItem::exit()],
