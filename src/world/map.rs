@@ -110,7 +110,8 @@ impl Map {
 
                 let map_value = self.data[next_node.1 as usize][next_node.0 as usize];
                 if let Some(value) = map_value {
-                    let cost = (value.path_cost + (value.fear_cost - npc_stats.courage)) as u32;
+                    let fear = i8::max(0, value.fear_cost as i8 - npc_stats.courage as i8) as u8;
+                    let cost = (value.path_cost + fear) as u32;
 
                     successors.push(Successor {
                         node: next_node,
