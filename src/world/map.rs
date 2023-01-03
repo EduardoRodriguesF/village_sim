@@ -1,4 +1,4 @@
-use bevy::prelude::*;
+use super::prelude::*;
 use pathfinding::prelude::astar;
 use rand::prelude::*;
 
@@ -20,63 +20,47 @@ pub struct Successor {
     pub cost: u32,
 }
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq, PartialOrd)]
+pub struct NodeData {
+    pub path_cost: u8,
+    pub fear_cost: u8,
+}
+
 #[derive(Resource)]
 pub struct Map {
     pub width: u8,
     pub height: u8,
-    pub data: Vec<Vec<Option<u8>>>,
+    pub data: Vec<Vec<Option<NodeData>>>,
     pub entities: Vec<EntityData>,
 }
 
 impl Map {
-    pub fn new(map_lines: Vec<String>, entities: Vec<EntityData>) -> Self {
-        let width = map_lines[0].len() as u8;
-        let height = map_lines.len() as u8;
-        let mut data = Vec::new();
-
-        for line in map_lines {
-            let mut row: Vec<Option<u8>> = Vec::new();
-
-            for c in line.chars() {
-                match c {
-                    '1'..='9' => row.push(Some(c as u8 - b'0')),
-                    _ => row.push(None),
-                }
-            }
-
-            data.push(row);
-        }
-
-        Self {
-            width,
-            height,
-            data,
-            entities,
-        }
-    }
-
     pub fn from_ldtk(file: &str) -> Self {
         let ldtk = ldtk_rust::Project::new(file);
-        let mut data: Vec<String> = Vec::new();
+        let mut data: Vec<Vec<Option<NodeData>>> = Vec::new();
         let mut entities: Vec<EntityData> = Vec::new();
 
         if let Some(level) = ldtk.get_level(0) {
             if let Some(layers) = &level.layer_instances {
-                let path_cost = layers.iter().find(|l| l.identifier == "PathCost").unwrap();
-                let walls = layers.iter().find(|l| l.identifier == "Walls").unwrap();
+                let path_cost_layer = layers.iter().find(|l| l.identifier == "PathCost").unwrap();
+                let fear_cost_layer = layers.iter().find(|l| l.identifier == "FearCost").unwrap();
+                let walls_layer = layers.iter().find(|l| l.identifier == "Walls").unwrap();
                 let entities_layer = layers.iter().find(|l| l.identifier == "Entities").unwrap();
 
-                let mut row = String::new();
+                let mut row: Vec<Option<NodeData>> = Vec::new();
 
-                for (idx, grid_item) in path_cost.int_grid_csv.iter().enumerate() {
-                    let next_item = match walls.int_grid_csv.get(idx) {
-                        Some(0) => grid_item.to_string(),
-                        _ => String::from("x"),
+                for (idx, path_cost) in path_cost_layer.int_grid_csv.iter().enumerate() {
+                    let next_item = match walls_layer.int_grid_csv.get(idx) {
+                        Some(0) => Some(NodeData {
+                            path_cost: *path_cost as u8,
+                            fear_cost: *fear_cost_layer.int_grid_csv.get(idx).unwrap() as u8,
+                        }),
+                        _ => None,
                     };
 
-                    row.push_str(&next_item);
+                    row.push(next_item);
 
-                    if (idx + 1) % (path_cost.c_wid as usize) == 0 {
+                    if (idx + 1) % (path_cost_layer.c_wid as usize) == 0 {
                         data.push(row.clone());
                         row.clear();
                     }
@@ -99,10 +83,15 @@ impl Map {
             }
         }
 
-        Self::new(data, entities)
+        Self {
+            width: data[0].len() as u8,
+            height: data.len() as u8,
+            entities,
+            data,
+        }
     }
 
-    pub fn get_successors(&self, node: &MapNode) -> Vec<Successor> {
+    pub fn get_successors(&self, node: &MapNode, npc_stats: &NpcStats) -> Vec<Successor> {
         let mut successors = Vec::new();
         for dx in -1i16..=1 {
             for dy in -1i16..=1 {
@@ -121,9 +110,12 @@ impl Map {
 
                 let map_value = self.data[next_node.1 as usize][next_node.0 as usize];
                 if let Some(value) = map_value {
+                    let fear = i8::max(0, value.fear_cost as i8 - npc_stats.guts as i8) as u8;
+                    let cost = (value.path_cost + fear) as u32;
+
                     successors.push(Successor {
                         node: next_node,
-                        cost: value as u32,
+                        cost,
                     });
                 }
             }
@@ -132,11 +124,16 @@ impl Map {
         successors
     }
 
-    pub fn find_path(&self, start: MapNode, goal: MapNode) -> Option<(Vec<MapNode>, u32)> {
+    pub fn find_path(
+        &self,
+        start: MapNode,
+        goal: MapNode,
+        npc_stats: &NpcStats,
+    ) -> Option<(Vec<MapNode>, u32)> {
         astar(
             &start,
             |p| {
-                self.get_successors(p)
+                self.get_successors(p, &npc_stats)
                     .iter()
                     .map(|s| (s.node, s.cost))
                     .collect::<Vec<_>>()
@@ -150,12 +147,13 @@ impl Map {
         &self,
         start: Vec2,
         goal: Vec2,
+        npc_stats: &NpcStats,
         rng: Option<&mut StdRng>,
     ) -> Option<(Vec<Vec2>, u32)> {
         let start = Self::vec2_to_node(&start);
         let goal = Self::vec2_to_node(&goal);
 
-        if let Some((nodes, cost)) = self.find_path(start, goal) {
+        if let Some((nodes, cost)) = self.find_path(start, goal, npc_stats) {
             let mut instructions: Vec<Vec2> =
                 nodes.iter().map(|node| Self::node_to_vec2(*node)).collect();
 

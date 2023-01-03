@@ -10,14 +10,14 @@ pub fn determine_instructions(
     mut seed: ResMut<Seed>,
     map: Res<Map>,
     query: Query<
-        (Entity, &HeadlessTransform, &DestinationPoint),
+        (Entity, &HeadlessTransform, &DestinationPoint, &NpcStats),
         Without<InstructionsToDestination>,
     >,
 ) {
-    for (entity, transform, destination) in query.iter() {
+    for (entity, transform, destination, stats) in query.iter() {
         let start = transform.translation.truncate();
 
-        let maybe_path = map.find_path_by_vec2(start, destination.0, Some(&mut seed.rng));
+        let maybe_path = map.find_path_by_vec2(start, destination.0, stats, Some(&mut seed.rng));
 
         if let Some((instructions, _cost)) = maybe_path {
             commands
