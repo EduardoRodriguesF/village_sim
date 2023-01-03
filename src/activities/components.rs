@@ -6,12 +6,14 @@ pub struct Identifier(pub String);
 #[derive(Component)]
 pub struct Activity {
     pub avg_time_in_seconds: f32,
+    pub area: Rect,
 }
 
 impl Default for Activity {
     fn default() -> Self {
         Activity {
             avg_time_in_seconds: 6.,
+            area: Rect::new(0., 0., 16., 16.),
         }
     }
 }
@@ -51,6 +53,13 @@ impl RoutineItem {
     pub fn from_search(identifier: &str) -> RoutineItem {
         RoutineItem {
             search: Some(identifier.to_string()),
+            ..default()
+        }
+    }
+
+    pub fn exit() -> RoutineItem {
+        RoutineItem {
+            search: Some("Entrance".to_string()),
             ..default()
         }
     }

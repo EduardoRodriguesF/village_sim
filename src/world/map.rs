@@ -7,6 +7,8 @@ const TILE_SIZE: u8 = 16;
 pub struct EntityData {
     pub identifier: String,
     pub position: Vec2,
+    pub width: i64,
+    pub height: i64,
 }
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone, Copy, PartialOrd)]
@@ -90,6 +92,8 @@ impl Map {
                     entities.push(EntityData {
                         identifier,
                         position,
+                        width: entity.width,
+                        height: entity.height,
                     })
                 }
             }

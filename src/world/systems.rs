@@ -3,14 +3,17 @@ use crate::activities::prelude::*;
 use crate::movement::prelude::*;
 use rand::prelude::*;
 
-const POSITION_OFFSET_MULTIPLIER: f32 = 300.;
+const MAX_NPCS: u16 = 50;
 
 pub fn spawn_entities(mut commands: Commands, map: Res<Map>) {
     for entity in map.entities.iter() {
+        let area = Rect::new(0., 0., entity.width as f32, entity.height as f32);
+
         let maybe_entity_commands = match entity.identifier.as_str() {
             "MarketTent" => Some(commands.spawn((
                 Activity {
                     avg_time_in_seconds: 12.,
+                    area,
                 },
                 SpriteBundle {
                     sprite: Sprite {
@@ -21,6 +24,13 @@ pub fn spawn_entities(mut commands: Commands, map: Res<Map>) {
                     },
                     ..default()
                 },
+            ))),
+            "Entrance" => Some(commands.spawn((
+                Activity {
+                    avg_time_in_seconds: 1.,
+                    area,
+                },
+                Entrance,
             ))),
             _ => None,
         };
@@ -34,13 +44,36 @@ pub fn spawn_entities(mut commands: Commands, map: Res<Map>) {
     }
 }
 
-pub fn setup(mut commands: Commands, mut seed: ResMut<Seed>) {
-    for _ in 0..20 {
+pub fn populate(
+    mut commands: Commands,
+    mut seed: ResMut<Seed>,
+    q_npcs: Query<Entity, With<NpcStats>>,
+    q_entrances: Query<(&HeadlessTransform, &Activity), With<Entrance>>,
+) {
+    let population = q_npcs.iter().len() as u16;
+    let entrances = q_entrances
+        .iter()
+        .collect::<Vec<(&HeadlessTransform, &Activity)>>();
+
+    if population >= MAX_NPCS {
+        return;
+    }
+
+    for _ in population..MAX_NPCS {
         let r: f32 = seed.rng.gen();
         let g: f32 = seed.rng.gen();
         let b: f32 = seed.rng.gen();
-        let x_pos = seed.rng.gen::<f32>() * POSITION_OFFSET_MULTIPLIER;
-        let y_pos = seed.rng.gen::<f32>() * POSITION_OFFSET_MULTIPLIER;
+
+        let (pos, entrance) = entrances
+            .get(seed.rng.gen_range(0..entrances.len()))
+            .unwrap();
+
+        let pos = pos.0.translation
+            + Vec3::new(
+                seed.rng.gen_range(0.0..entrance.area.width()),
+                seed.rng.gen_range(0.0..entrance.area.height()),
+                0.,
+            );
 
         commands.spawn((
             SpriteBundle {
@@ -56,11 +89,11 @@ pub fn setup(mut commands: Commands, mut seed: ResMut<Seed>) {
                 speed: seed.rng.gen_range(1.0..1.7),
             },
             Routine {
-                activities: vec![RoutineItem::from_search("MarketTent")],
+                activities: vec![RoutineItem::from_search("MarketTent"), RoutineItem::exit()],
                 is_loop: true,
                 ..default()
             },
-            HeadlessTransform(Transform::from_xyz(x_pos, y_pos, 1.)),
+            HeadlessTransform(Transform::from_translation(pos)),
             Velocity::new(0., 0.),
             Collider::new(Vec2::new(6., 6.), bevy::sprite::Anchor::BottomCenter),
         ));
