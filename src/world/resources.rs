@@ -34,39 +34,39 @@ impl Weather {
         matches!(self, Self::Clear)
     }
 
-    /// Returns previous intensity level.
+    /// Mutates weather to previous intensity level.
     ///
     /// ## Example
     ///
     /// ```rust
     /// let mut weather = Weather::Drizzle;
     ///
-    /// weather = weather.lessen();
+    /// weather.lessen();
     ///
     /// assert_eq!(result, Weather::Clear);
     /// ```
-    pub fn lessen(&self) -> Self {
-        match self {
+    pub fn lessen(&mut self) {
+        *self = match self {
             Weather::HeavyRain => Weather::Rain,
             Weather::Rain => Weather::Drizzle,
             Weather::Drizzle => Weather::Clear,
             Weather::Clear => Weather::Clear,
-        }
+        };
     }
 
-    /// Returns next intensity level.
+    /// Mutates weather to next intensity level.
     ///
     /// ## Example
     ///
     /// ```rust
     /// let mut weather = Weather::Clear;
     ///
-    /// weather = weather.intensify();
+    /// weather.intensify();
     ///
     /// assert_eq!(result, Weather::Drizzle);
     /// ```
-    pub fn intensify(&self) -> Self {
-        match self {
+    pub fn intensify(&mut self) {
+        *self = match self {
             Weather::Clear => Weather::Drizzle,
             Weather::Drizzle => Weather::Rain,
             Weather::Rain => Weather::HeavyRain,
