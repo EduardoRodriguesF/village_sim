@@ -223,12 +223,12 @@ impl Pathfinder {
 
                     if !self.weather.is_clear() {
                         let coverage = match node.roof {
-                            0 => 10,
+                            0 => 6,
                             _ => node.roof,
                         } as i8;
 
                         let extra_weather_cost =
-                            i8::max(0, coverage - self.stats.guts as i8 - self.weather as i8) as u32;
+                            i8::max(0, coverage * self.weather as i8 - self.stats.guts as i8) as u32;
 
                         cost += extra_weather_cost;
                     }
