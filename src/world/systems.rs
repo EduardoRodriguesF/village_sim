@@ -18,8 +18,8 @@ pub fn spawn_entities(mut commands: Commands, map: Res<Map>) {
                 SpriteBundle {
                     sprite: Sprite {
                         color: Color::LIME_GREEN,
-                        rect: Some(Rect::new(0., 0., 32., 32.)),
-                        anchor: bevy::sprite::Anchor::BottomCenter,
+                        rect: Some(Rect::new(0., 0., entity.width as f32, entity.height as f32)),
+                        anchor: bevy::sprite::Anchor::Center,
                         ..default()
                     },
                     ..default()
