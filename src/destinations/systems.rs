@@ -5,6 +5,20 @@ use crate::world::prelude::*;
 
 const DESTINATION_THRESHOLD: f32 = 4.;
 
+pub fn reconsider_path(
+    mut commands: Commands,
+    weather: Res<Weather>,
+    q_npcs: Query<Entity, With<InstructionsToDestination>>,
+) {
+    if weather.is_changed() {
+        for entity in q_npcs.iter() {
+            commands
+                .entity(entity)
+                .remove::<InstructionsToDestination>();
+        }
+    }
+}
+
 pub fn determine_instructions(
     mut commands: Commands,
     weather: Res<Weather>,
