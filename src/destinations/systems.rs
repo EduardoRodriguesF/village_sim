@@ -24,6 +24,7 @@ pub fn determine_instructions(
             .with_map(map.clone())
             .with_rng(seed.rng.clone())
             .with_stats(*stats)
+            .with_weather(*weather)
             .find_path_by_vec2(start, destination.0);
 
         if let Some((instructions, _cost)) = maybe_path {
