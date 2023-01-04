@@ -15,3 +15,20 @@ impl Default for Seed {
         Seed { rng, key }
     }
 }
+
+#[derive(Resource, Default, Clone, Copy)]
+pub enum Weather {
+    #[default]
+    Clear,
+    Rain,
+}
+
+impl Weather {
+    /// Returns `true` if the weather is [`Clear`].
+    ///
+    /// [`Clear`]: Weather::Clear
+    #[must_use]
+    pub fn is_clear(&self) -> bool {
+        matches!(self, Self::Clear)
+    }
+}

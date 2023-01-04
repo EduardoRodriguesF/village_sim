@@ -7,6 +7,7 @@ const DESTINATION_THRESHOLD: f32 = 4.;
 
 pub fn determine_instructions(
     mut commands: Commands,
+    weather: Res<Weather>,
     seed: Res<Seed>,
     map: Res<Map>,
     query: Query<
