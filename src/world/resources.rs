@@ -16,7 +16,7 @@ impl Default for Seed {
     }
 }
 
-#[derive(Resource, Default, Clone, Copy)]
+#[derive(Resource, Default, Clone, Copy, Debug)]
 pub enum Weather {
     #[default]
     Clear = 0,
