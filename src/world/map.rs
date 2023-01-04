@@ -228,7 +228,7 @@ impl Pathfinder {
                         } as i8;
 
                         let extra_weather_cost =
-                            i8::max(0, extra - self.stats.guts as i8 - 5) as u32;
+                            i8::max(0, extra - self.stats.guts as i8 - self.weather as i8) as u32;
 
                         cost += extra_weather_cost;
                     }

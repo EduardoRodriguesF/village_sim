@@ -19,8 +19,8 @@ impl Default for Seed {
 #[derive(Resource, Default, Clone, Copy)]
 pub enum Weather {
     #[default]
-    Clear,
-    Rain,
+    Clear = 0,
+    Rain = 5,
 }
 
 impl Weather {
