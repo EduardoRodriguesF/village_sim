@@ -223,7 +223,7 @@ impl Pathfinder {
 
                     if !self.weather.is_clear() {
                         let extra = match node.roof {
-                            0 => 9,
+                            0 => 10,
                             _ => node.roof,
                         } as i8;
 
