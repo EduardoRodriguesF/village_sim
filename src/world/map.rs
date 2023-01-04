@@ -222,13 +222,13 @@ impl Pathfinder {
                     let mut cost = (node.path_cost + fear) as u32;
 
                     if !self.weather.is_clear() {
-                        let extra = match node.roof {
+                        let coverage = match node.roof {
                             0 => 10,
                             _ => node.roof,
                         } as i8;
 
                         let extra_weather_cost =
-                            i8::max(0, extra - self.stats.guts as i8 - self.weather as i8) as u32;
+                            i8::max(0, coverage - self.stats.guts as i8 - self.weather as i8) as u32;
 
                         cost += extra_weather_cost;
                     }
