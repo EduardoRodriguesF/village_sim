@@ -2,7 +2,7 @@ use super::prelude::*;
 use rand::distributions::WeightedIndex;
 use rand::prelude::*;
 
-#[derive(Component, Debug, Default)]
+#[derive(Component, Debug, Default, Clone, Copy)]
 pub struct NpcStats {
     pub speed: f32,
     pub guts: u8,

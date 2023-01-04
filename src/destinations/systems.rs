@@ -7,17 +7,23 @@ const DESTINATION_THRESHOLD: f32 = 4.;
 
 pub fn determine_instructions(
     mut commands: Commands,
-    mut seed: ResMut<Seed>,
+    seed: Res<Seed>,
     map: Res<Map>,
     query: Query<
         (Entity, &HeadlessTransform, &DestinationPoint, &NpcStats),
         Without<InstructionsToDestination>,
     >,
 ) {
+    let map = map.into_inner();
+
     for (entity, transform, destination, stats) in query.iter() {
         let start = transform.translation.truncate();
 
-        let maybe_path = map.find_path_by_vec2(start, destination.0, stats, Some(&mut seed.rng));
+        let maybe_path = Pathfinder::new()
+            .with_map(map.clone())
+            .with_rng(seed.rng.clone())
+            .with_stats(*stats)
+            .find_path_by_vec2(start, destination.0);
 
         if let Some((instructions, _cost)) = maybe_path {
             commands

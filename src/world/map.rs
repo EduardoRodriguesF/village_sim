@@ -4,6 +4,7 @@ use rand::prelude::*;
 
 const TILE_SIZE: u8 = 16;
 
+#[derive(Debug, PartialEq, Clone)]
 pub struct EntityData {
     pub identifier: String,
     pub position: Vec2,
@@ -26,7 +27,7 @@ pub struct NodeData {
     pub fear_cost: u8,
 }
 
-#[derive(Resource)]
+#[derive(Resource, Default, Clone)]
 pub struct Map {
     pub width: u8,
     pub height: u8,
@@ -91,49 +92,52 @@ impl Map {
         }
     }
 
-    pub fn get_successors(&self, node: &MapNode, npc_stats: &NpcStats) -> Vec<Successor> {
-        let mut successors = Vec::new();
-        for dx in -1i16..=1 {
-            for dy in -1i16..=1 {
-                if dx == 0 && dy == 0 {
-                    continue;
-                }
-
-                let next_node = MapNode(node.0 + dx, node.1 + dy);
-                if next_node.0 < 0
-                    || next_node.0 >= self.width.into()
-                    || next_node.1 < 0
-                    || next_node.1 >= self.height.into()
-                {
-                    continue;
-                }
-
-                let map_value = self.data[next_node.1 as usize][next_node.0 as usize];
-                if let Some(value) = map_value {
-                    let fear = i8::max(0, value.fear_cost as i8 - npc_stats.guts as i8) as u8;
-                    let cost = (value.path_cost + fear) as u32;
-
-                    successors.push(Successor {
-                        node: next_node,
-                        cost,
-                    });
-                }
-            }
-        }
-
-        successors
+    pub fn vec2_to_node(&self, translation: &Vec2) -> MapNode {
+        MapNode(
+            translation.x.round() as i16 / TILE_SIZE as i16,
+            translation.y.round() as i16 / TILE_SIZE as i16,
+        )
     }
 
-    pub fn find_path(
-        &self,
-        start: MapNode,
-        goal: MapNode,
-        npc_stats: &NpcStats,
-    ) -> Option<(Vec<MapNode>, u32)> {
+    pub fn node_to_vec2(&self, node: MapNode) -> Vec2 {
+        let MapNode(x, y) = node;
+
+        Vec2::new(x as f32 * TILE_SIZE as f32, y as f32 * TILE_SIZE as f32)
+    }
+}
+
+#[derive(Default)]
+pub struct Pathfinder {
+    map: Map,
+    stats: NpcStats,
+    rng: Option<StdRng>,
+}
+
+impl Pathfinder {
+    pub fn new() -> Self {
+        Pathfinder::default()
+    }
+
+    pub fn with_map(&mut self, map: Map) -> &mut Self {
+        self.map = map;
+        self
+    }
+
+    pub fn with_stats(&mut self, stats: NpcStats) -> &mut Self {
+        self.stats = stats;
+        self
+    }
+
+    pub fn with_rng(&mut self, rng: StdRng) -> &mut Self {
+        self.rng = Some(rng);
+        self
+    }
+
+    pub fn find_path(&self, start: MapNode, goal: MapNode) -> Option<(Vec<MapNode>, u32)> {
         astar(
             &start,
             |p| {
-                self.get_successors(p, &npc_stats)
+                self.get_successors(p)
                     .iter()
                     .map(|s| (s.node, s.cost))
                     .collect::<Vec<_>>()
@@ -143,24 +147,21 @@ impl Map {
         )
     }
 
-    pub fn find_path_by_vec2(
-        &self,
-        start: Vec2,
-        goal: Vec2,
-        npc_stats: &NpcStats,
-        rng: Option<&mut StdRng>,
-    ) -> Option<(Vec<Vec2>, u32)> {
-        let start = Self::vec2_to_node(&start);
-        let goal = Self::vec2_to_node(&goal);
+    pub fn find_path_by_vec2(&self, start: Vec2, goal: Vec2) -> Option<(Vec<Vec2>, u32)> {
+        let start = self.map.vec2_to_node(&start);
+        let goal = self.map.vec2_to_node(&goal);
 
-        if let Some((nodes, cost)) = self.find_path(start, goal, npc_stats) {
-            let mut instructions: Vec<Vec2> =
-                nodes.iter().map(|node| Self::node_to_vec2(*node)).collect();
+        if let Some((nodes, cost)) = self.find_path(start, goal) {
+            let mut instructions: Vec<Vec2> = nodes
+                .iter()
+                .map(|node| self.map.node_to_vec2(*node))
+                .collect();
 
-            if let Some(rng) = rng {
+            if let Some(rng) = &self.rng {
                 let variation = TILE_SIZE as f32 / 2.;
                 let variation_range = -variation..variation;
                 let mut last_step = instructions[0];
+                let mut rng = rng.to_owned();
 
                 instructions = instructions
                     .iter_mut()
@@ -189,16 +190,36 @@ impl Map {
         None
     }
 
-    pub fn vec2_to_node(translation: &Vec2) -> MapNode {
-        MapNode(
-            translation.x.round() as i16 / TILE_SIZE as i16,
-            translation.y.round() as i16 / TILE_SIZE as i16,
-        )
-    }
+    pub fn get_successors(&self, node: &MapNode) -> Vec<Successor> {
+        let mut successors = Vec::new();
+        for dx in -1i16..=1 {
+            for dy in -1i16..=1 {
+                if dx == 0 && dy == 0 {
+                    continue;
+                }
 
-    pub fn node_to_vec2(node: MapNode) -> Vec2 {
-        let MapNode(x, y) = node;
+                let next_node = MapNode(node.0 + dx, node.1 + dy);
+                if next_node.0 < 0
+                    || next_node.0 >= self.map.width.into()
+                    || next_node.1 < 0
+                    || next_node.1 >= self.map.height.into()
+                {
+                    continue;
+                }
 
-        Vec2::new(x as f32 * TILE_SIZE as f32, y as f32 * TILE_SIZE as f32)
+                let map_value = self.map.data[next_node.1 as usize][next_node.0 as usize];
+                if let Some(value) = map_value {
+                    let fear = i8::max(0, value.fear_cost as i8 - self.stats.guts as i8) as u8;
+                    let cost = (value.path_cost + fear) as u32;
+
+                    successors.push(Successor {
+                        node: next_node,
+                        cost,
+                    });
+                }
+            }
+        }
+
+        successors
     }
 }
