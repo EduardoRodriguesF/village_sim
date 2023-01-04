@@ -228,9 +228,11 @@ impl Pathfinder {
                         } as i8;
 
                         let extra_weather_cost =
-                            i8::max(0, coverage * self.weather as i8 - self.stats.guts as i8) as u32;
+                            coverage * self.weather as i8 - self.stats.guts as i8;
 
-                        cost += extra_weather_cost;
+                        if extra_weather_cost > 0 {
+                            cost += extra_weather_cost as u32;
+                        }
                     }
 
                     successors.push(Successor {
