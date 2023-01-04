@@ -12,6 +12,7 @@ mod prelude {
     pub use crate::headless_transform::components::*;
     pub use crate::safe_despawn::ScheduledDespawn;
     pub use crate::utils::prelude::*;
+    pub use crate::world::prelude::*;
     pub use bevy::prelude::*;
 
     pub const FPS: f32 = 60.;

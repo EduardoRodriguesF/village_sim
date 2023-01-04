@@ -25,6 +25,7 @@ pub struct Successor {
 pub struct NodeData {
     pub path_cost: u8,
     pub fear_cost: u8,
+    pub roof: u8,
 }
 
 #[derive(Resource, Default, Clone)]
@@ -45,6 +46,7 @@ impl Map {
             if let Some(layers) = &level.layer_instances {
                 let path_cost_layer = layers.iter().find(|l| l.identifier == "PathCost").unwrap();
                 let fear_cost_layer = layers.iter().find(|l| l.identifier == "FearCost").unwrap();
+                let roof_layer = layers.iter().find(|l| l.identifier == "Roof").unwrap();
                 let walls_layer = layers.iter().find(|l| l.identifier == "Walls").unwrap();
                 let entities_layer = layers.iter().find(|l| l.identifier == "Entities").unwrap();
 
@@ -55,6 +57,7 @@ impl Map {
                         Some(0) => Some(NodeData {
                             path_cost: *path_cost as u8,
                             fear_cost: *fear_cost_layer.int_grid_csv.get(idx).unwrap() as u8,
+                            roof: *roof_layer.int_grid_csv.get(idx).unwrap() as u8,
                         }),
                         _ => None,
                     };
@@ -111,6 +114,7 @@ pub struct Pathfinder {
     map: Map,
     stats: NpcStats,
     rng: Option<StdRng>,
+    weather: Weather,
 }
 
 impl Pathfinder {
@@ -130,6 +134,11 @@ impl Pathfinder {
 
     pub fn with_rng(&mut self, rng: StdRng) -> &mut Self {
         self.rng = Some(rng);
+        self
+    }
+
+    pub fn with_weather(&mut self, weather: Weather) -> &mut Self {
+        self.weather = weather;
         self
     }
 
@@ -208,9 +217,23 @@ impl Pathfinder {
                 }
 
                 let map_value = self.map.data[next_node.1 as usize][next_node.0 as usize];
-                if let Some(value) = map_value {
-                    let fear = i8::max(0, value.fear_cost as i8 - self.stats.guts as i8) as u8;
-                    let cost = (value.path_cost + fear) as u32;
+                if let Some(node) = map_value {
+                    let fear = i8::max(0, node.fear_cost as i8 - self.stats.guts as i8) as u8;
+                    let mut cost = (node.path_cost + fear) as u32;
+
+                    if !self.weather.is_clear() {
+                        let coverage = match node.roof {
+                            0 => 6,
+                            _ => node.roof,
+                        } as i8;
+
+                        let extra_weather_cost =
+                            coverage * self.weather as i8 - self.stats.guts as i8;
+
+                        if extra_weather_cost > 0 {
+                            cost += extra_weather_cost as u32;
+                        }
+                    }
 
                     successors.push(Successor {
                         node: next_node,

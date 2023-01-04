@@ -5,8 +5,23 @@ use crate::world::prelude::*;
 
 const DESTINATION_THRESHOLD: f32 = 4.;
 
+pub fn reconsider_path(
+    mut commands: Commands,
+    weather: Res<Weather>,
+    q_npcs: Query<Entity, With<InstructionsToDestination>>,
+) {
+    if weather.is_changed() {
+        for entity in q_npcs.iter() {
+            commands
+                .entity(entity)
+                .remove::<InstructionsToDestination>();
+        }
+    }
+}
+
 pub fn determine_instructions(
     mut commands: Commands,
+    weather: Res<Weather>,
     seed: Res<Seed>,
     map: Res<Map>,
     query: Query<
@@ -23,6 +38,7 @@ pub fn determine_instructions(
             .with_map(map.clone())
             .with_rng(seed.rng.clone())
             .with_stats(*stats)
+            .with_weather(*weather)
             .find_path_by_vec2(start, destination.0);
 
         if let Some((instructions, _cost)) = maybe_path {
