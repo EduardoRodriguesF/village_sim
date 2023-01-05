@@ -31,6 +31,15 @@ pub fn spawn_entities(mut commands: Commands, map: Res<Map>) {
                     area,
                 },
                 Entrance,
+                SpriteBundle {
+                    sprite: Sprite {
+                        color: Color::PINK,
+                        rect: Some(Rect::new(0., 0., entity.width as f32, entity.height as f32)),
+                        anchor: bevy::sprite::Anchor::BottomLeft,
+                        ..default()
+                    },
+                    ..default()
+                },
             ))),
             _ => None,
         };
