@@ -501,20 +501,6 @@
 							"defUid": 11,
 							"px": [410,390],
 							"fieldInstances": []
-						},
-						{
-							"__identifier": "MarketTent",
-							"__grid": [129,115],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#94D9B3",
-							"iid": "eb5770e0-7820-11ed-9c4e-110abec187fa",
-							"width": 16,
-							"height": 24,
-							"defUid": 11,
-							"px": [518,462],
-							"fieldInstances": []
 						}
 					]
 				},
