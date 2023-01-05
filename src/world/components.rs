@@ -11,7 +11,7 @@ pub struct NpcStats {
 
 impl NpcStats {
     pub fn new(rng: &mut StdRng) -> Self {
-        let values = vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        let values = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
         let weights = values.iter().rev();
 
         let dist = WeightedIndex::new(weights).unwrap();
