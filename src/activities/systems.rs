@@ -3,10 +3,39 @@ use crate::world::prelude::*;
 use rand::distributions::WeightedIndex;
 use rand::prelude::*;
 
+pub fn react(time: Res<Time>, mut commands: Commands, mut query: Query<(Entity, &mut Reaction)>) {
+    for (entity, mut reaction) in query.iter_mut() {
+        if reaction.timer.tick(time.delta()).just_finished() {
+            commands.entity(entity).remove::<Reaction>();
+        }
+    }
+}
+
+pub fn have_reaction(
+    mut seed: ResMut<Seed>,
+    mut commands: Commands,
+    q_npcs: Query<
+        (Entity, &NpcStats),
+        Or<(Added<ActivityPlan>, Added<SearchingActivity>, Added<Busy>)>,
+    >,
+) {
+    for (entity, stats) in q_npcs.iter() {
+        let base = 1. / stats.agility as f32 * 5.;
+        let range = (base / 2.)..base;
+
+        commands.entity(entity).insert(Reaction {
+            timer: Timer::from_seconds(seed.rng.gen_range(range), TimerMode::Once),
+        });
+    }
+}
+
 pub fn apply_activity_plan(
     mut seed: ResMut<Seed>,
     mut commands: Commands,
-    q_people: Query<(Entity, &ActivityPlan, &HeadlessTransform), Without<Busy>>,
+    q_people: Query<
+        (Entity, &ActivityPlan, &HeadlessTransform),
+        (Without<Busy>, Without<Reaction>),
+    >,
     q_activities: Query<(&Activity, Option<&HeadlessTransform>)>,
 ) {
     for (entity, plan, transform) in q_people.iter() {
@@ -38,7 +67,10 @@ pub fn apply_activity_plan(
 pub fn search_activity(
     mut commands: Commands,
     mut seed: ResMut<Seed>,
-    q_people: Query<(Entity, &SearchingActivity, &HeadlessTransform), Without<ActivityPlan>>,
+    q_people: Query<
+        (Entity, &SearchingActivity, &HeadlessTransform),
+        (Without<ActivityPlan>, Without<Reaction>),
+    >,
     q_activities: Query<(Entity, &Identifier, &HeadlessTransform), With<Activity>>,
 ) {
     for (entity, search, transform) in q_people.iter() {
@@ -83,7 +115,7 @@ pub fn do_activity(
     time: Res<Time>,
     mut q_people: Query<
         (Entity, &HeadlessTransform, &mut Busy, &ActivityPlan),
-        Without<DestinationPoint>,
+        (Without<DestinationPoint>, Without<Reaction>),
     >,
     q_activities: Query<&Identifier, With<Activity>>,
 ) {
@@ -113,7 +145,7 @@ pub fn do_activity(
 
 pub fn follow_routine(
     mut commands: Commands,
-    mut q_people: Query<(Entity, &mut Routine), Without<ActivityPlan>>,
+    mut q_people: Query<(Entity, &mut Routine), (Without<ActivityPlan>, Without<Reaction>)>,
 ) {
     for (entity, mut routine) in q_people.iter_mut() {
         let mut entity = commands.entity(entity);

@@ -19,6 +19,7 @@ impl Velocity {
 }
 
 #[derive(Component)]
+#[component(storage = "SparseSet")]
 pub struct MovementIntention {
     pub x: f32,
     pub y: f32,

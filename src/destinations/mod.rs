@@ -9,7 +9,8 @@ pub struct DestinationsPlugin;
 
 impl Plugin for DestinationsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(reconsider_path)
+        app.add_system(check_path_conditions_change)
+            .add_system(reconsider_path)
             .add_system(determine_instructions)
             .add_system(follow_instructions);
     }

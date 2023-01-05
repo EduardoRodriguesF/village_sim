@@ -94,3 +94,8 @@ impl Routine {
         self.get_current()
     }
 }
+
+#[derive(Component, Default)]
+pub struct Reaction {
+    pub timer: Timer,
+}
