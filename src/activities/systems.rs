@@ -14,11 +14,17 @@ pub fn react(time: Res<Time>, mut commands: Commands, mut query: Query<(Entity, 
 pub fn have_reaction(
     mut seed: ResMut<Seed>,
     mut commands: Commands,
-    q_npcs: Query<Entity, Or<(Added<ActivityPlan>, Added<SearchingActivity>, Added<Busy>)>>,
+    q_npcs: Query<
+        (Entity, &NpcStats),
+        Or<(Added<ActivityPlan>, Added<SearchingActivity>, Added<Busy>)>,
+    >,
 ) {
-    for entity in q_npcs.iter() {
+    for (entity, stats) in q_npcs.iter() {
+        let base = 1. / stats.agility as f32 * 5.;
+        let range = (base / 2.)..base;
+
         commands.entity(entity).insert(Reaction {
-            timer: Timer::from_seconds(seed.rng.gen_range(0.2..4.0), TimerMode::Once),
+            timer: Timer::from_seconds(seed.rng.gen_range(range), TimerMode::Once),
         });
     }
 }

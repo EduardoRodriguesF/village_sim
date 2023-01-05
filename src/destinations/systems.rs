@@ -14,6 +14,7 @@ pub fn reconsider_path(
         for entity in q_npcs.iter() {
             commands
                 .entity(entity)
+                .insert(MovementIntention::zero())
                 .remove::<InstructionsToDestination>();
         }
     }

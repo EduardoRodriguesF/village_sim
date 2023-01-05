@@ -6,6 +6,7 @@ use rand::prelude::*;
 pub struct NpcStats {
     pub speed: f32,
     pub guts: u8,
+    pub agility: u8,
 }
 
 impl NpcStats {
@@ -18,6 +19,7 @@ impl NpcStats {
         Self {
             speed: rng.gen_range(1.0..1.3),
             guts: values[dist.sample(rng)],
+            agility: values[dist.sample(rng)],
         }
     }
 }
