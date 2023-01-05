@@ -7,4 +7,5 @@ pub struct DestinationPoint(pub Vec2);
 pub struct InstructionsToDestination(pub Vec<Vec2>);
 
 #[derive(Component)]
+#[component(storage = "SparseSet")]
 pub struct ReconsiderPath;
