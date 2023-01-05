@@ -5,18 +5,24 @@ use crate::world::prelude::*;
 
 const DESTINATION_THRESHOLD: f32 = 4.;
 
-pub fn reconsider_path(
+pub fn check_path_conditions_change(
     mut commands: Commands,
     weather: Res<Weather>,
     q_npcs: Query<Entity, With<InstructionsToDestination>>,
 ) {
     if weather.is_changed() {
         for entity in q_npcs.iter() {
-            commands
-                .entity(entity)
-                .insert(MovementIntention::zero())
-                .remove::<InstructionsToDestination>();
+            commands.entity(entity).insert(ReconsiderPath);
         }
+    }
+}
+
+pub fn reconsider_path(mut commands: Commands, q_npcs: Query<Entity, With<ReconsiderPath>>) {
+    for entity in q_npcs.iter() {
+        commands
+            .entity(entity)
+            .insert(MovementIntention::zero())
+            .remove::<(InstructionsToDestination, ReconsiderPath)>();
     }
 }
 
