@@ -116,6 +116,7 @@ pub fn create_walls(mut commands: Commands, map: Res<Map>) {
                         sprite: Sprite {
                             color: Color::hex("333").unwrap(),
                             rect: Some(Rect::new(0., 0., 16., 16.)),
+                            anchor: bevy::sprite::Anchor::BottomLeft,
                             ..default()
                         },
                         ..default()
