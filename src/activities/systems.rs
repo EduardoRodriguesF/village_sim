@@ -124,7 +124,7 @@ pub fn do_activity(
 
         // Do not consider as doing activity if too far away.
         if let Some(location) = busy.location {
-            if position.distance(location) > 16. {
+            if position.distance(location) > 8. {
                 commands.entity(entity).insert(DestinationPoint(location));
                 continue;
             }
