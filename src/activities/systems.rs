@@ -92,6 +92,11 @@ pub fn search_activity(
                 a_distance.partial_cmp(&b_distance).unwrap()
             });
 
+            // Desconsider first entrance, if more than one available
+            if matching_activities.len() > 1 && search.eq(&Identifier("Entrance".to_string())) {
+                matching_activities.remove(0);
+            }
+
             // Nearest will be preferred
             let weights: Vec<usize> = matching_activities
                 .iter()
