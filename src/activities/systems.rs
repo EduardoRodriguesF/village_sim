@@ -45,10 +45,10 @@ pub fn apply_activity_plan(
             let location = match maybe_activity_transform {
                 Some(transform) => {
                     let pos = transform.translation.truncate();
-                    let half_size = activity.area.half_size();
+
                     let deviation = Vec2::new(
-                        seed.rng.gen_range(-half_size.x..half_size.x),
-                        seed.rng.gen_range(-half_size.y..half_size.y),
+                        seed.rng.gen_range(0.0..activity.area.width() - 1.),
+                        seed.rng.gen_range(0.0..activity.area.height() - 1.),
                     );
 
                     pos + deviation
