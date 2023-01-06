@@ -70,12 +70,11 @@ impl Map {
                     }
                 }
 
-                let grid_size = Vec2::splat(entities_layer.grid_size as f32);
+                let map_height = (entities_layer.c_hei * entities_layer.grid_size) as f32;
 
                 for entity in entities_layer.entity_instances.iter() {
                     let identifier = entity.identifier.clone();
-                    let position =
-                        Vec2::new(entity.grid[0] as f32, entity.grid[1] as f32) * grid_size;
+                    let position = Vec2::new(entity.px[0] as f32, map_height - entity.px[1] as f32);
 
                     entities.push(EntityData {
                         identifier,
@@ -86,6 +85,8 @@ impl Map {
                 }
             }
         }
+
+        data.reverse();
 
         Self {
             width: data[0].len() as u8,

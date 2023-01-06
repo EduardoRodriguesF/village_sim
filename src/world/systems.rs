@@ -19,7 +19,7 @@ pub fn spawn_entities(mut commands: Commands, map: Res<Map>) {
                     sprite: Sprite {
                         color: Color::LIME_GREEN,
                         rect: Some(Rect::new(0., 0., entity.width as f32, entity.height as f32)),
-                        anchor: bevy::sprite::Anchor::Center,
+                        anchor: bevy::sprite::Anchor::BottomLeft,
                         ..default()
                     },
                     ..default()
@@ -31,6 +31,15 @@ pub fn spawn_entities(mut commands: Commands, map: Res<Map>) {
                     area,
                 },
                 Entrance,
+                SpriteBundle {
+                    sprite: Sprite {
+                        color: Color::PINK,
+                        rect: Some(Rect::new(0., 0., entity.width as f32, entity.height as f32)),
+                        anchor: bevy::sprite::Anchor::BottomLeft,
+                        ..default()
+                    },
+                    ..default()
+                },
             ))),
             _ => None,
         };
@@ -107,6 +116,7 @@ pub fn create_walls(mut commands: Commands, map: Res<Map>) {
                         sprite: Sprite {
                             color: Color::hex("333").unwrap(),
                             rect: Some(Rect::new(0., 0., 16., 16.)),
+                            anchor: bevy::sprite::Anchor::BottomLeft,
                             ..default()
                         },
                         ..default()
