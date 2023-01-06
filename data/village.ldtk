@@ -218,8 +218,8 @@
 			"maxCount": 0,
 			"limitScope": "PerLevel",
 			"limitBehavior": "MoveLastOne",
-			"pivotX": 0.5,
-			"pivotY": 0.5,
+			"pivotX": 0,
+			"pivotY": 1,
 			"fieldDefs": []
 		},
 		{
@@ -322,8 +322,8 @@
 					"entityInstances": [
 						{
 							"__identifier": "MarketTent",
-							"__grid": [105,74],
-							"__pivot": [0.5,0.5],
+							"__grid": [100,79],
+							"__pivot": [0,1],
 							"__tags": [],
 							"__tile": null,
 							"__smartColor": "#94D9B3",
@@ -331,13 +331,13 @@
 							"width": 40,
 							"height": 44,
 							"defUid": 11,
-							"px": [422,296],
+							"px": [402,320],
 							"fieldInstances": []
 						},
 						{
 							"__identifier": "MarketTent",
-							"__grid": [126,74],
-							"__pivot": [0.5,0.5],
+							"__grid": [121,79],
+							"__pivot": [0,1],
 							"__tags": [],
 							"__tile": null,
 							"__smartColor": "#94D9B3",
@@ -345,7 +345,7 @@
 							"width": 40,
 							"height": 44,
 							"defUid": 11,
-							"px": [506,296],
+							"px": [486,320],
 							"fieldInstances": []
 						},
 						{
@@ -434,50 +434,50 @@
 						},
 						{
 							"__identifier": "MarketTent",
-							"__grid": [79,82],
-							"__pivot": [0.5,0.5],
+							"__grid": [48,115],
+							"__pivot": [0,1],
 							"__tags": [],
 							"__tile": null,
 							"__smartColor": "#94D9B3",
 							"iid": "b0e94000-7820-11ed-9c4e-07a403a8eb8b",
-							"width": 144,
+							"width": 124,
 							"height": 16,
 							"defUid": 11,
-							"px": [318,330],
+							"px": [194,462],
 							"fieldInstances": []
 						},
 						{
 							"__identifier": "MarketTent",
-							"__grid": [124,101],
-							"__pivot": [0.5,0.5],
+							"__grid": [121,103],
+							"__pivot": [0,1],
 							"__tags": [],
 							"__tile": null,
 							"__smartColor": "#94D9B3",
 							"iid": "d3c5a870-7820-11ed-9c4e-a99234e5d237",
-							"width": 56,
+							"width": 40,
 							"height": 16,
 							"defUid": 11,
-							"px": [498,406],
+							"px": [486,414],
 							"fieldInstances": []
 						},
 						{
 							"__identifier": "MarketTent",
-							"__grid": [129,94],
-							"__pivot": [0.5,0.5],
+							"__grid": [127,99],
+							"__pivot": [0,1],
 							"__tags": [],
 							"__tile": null,
 							"__smartColor": "#94D9B3",
 							"iid": "d7a70150-7820-11ed-9c4e-dfb89a788e67",
 							"width": 16,
-							"height": 40,
+							"height": 28,
 							"defUid": 11,
-							"px": [518,378],
+							"px": [510,398],
 							"fieldInstances": []
 						},
 						{
 							"__identifier": "MarketTent",
-							"__grid": [134,82],
-							"__pivot": [0.5,0.5],
+							"__grid": [135,84],
+							"__pivot": [0,1],
 							"__tags": [],
 							"__tile": null,
 							"__smartColor": "#94D9B3",
@@ -485,13 +485,13 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 11,
-							"px": [538,330],
+							"px": [542,338],
 							"fieldInstances": []
 						},
 						{
 							"__identifier": "MarketTent",
-							"__grid": [102,97],
-							"__pivot": [0.5,0.5],
+							"__grid": [100,103],
+							"__pivot": [0,1],
 							"__tags": [],
 							"__tile": null,
 							"__smartColor": "#94D9B3",
@@ -499,7 +499,7 @@
 							"width": 16,
 							"height": 48,
 							"defUid": 11,
-							"px": [410,390],
+							"px": [402,414],
 							"fieldInstances": []
 						}
 					]
