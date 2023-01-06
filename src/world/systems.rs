@@ -27,7 +27,7 @@ pub fn spawn_entities(mut commands: Commands, map: Res<Map>) {
             ))),
             "Entrance" => Some(commands.spawn((
                 Activity {
-                    avg_time_in_seconds: 1.,
+                    avg_time_in_seconds: 0.15,
                     area,
                 },
                 Entrance,
