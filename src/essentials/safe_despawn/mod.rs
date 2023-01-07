@@ -1,3 +1,5 @@
+pub mod prelude;
+
 use bevy::prelude::*;
 
 pub struct SafeDespawnPlugin;

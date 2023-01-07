@@ -1,3 +1,5 @@
+pub mod prelude;
+
 use crate::prelude::*;
 use bevy::prelude::*;
 

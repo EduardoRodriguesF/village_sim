@@ -1,5 +1,4 @@
 use super::prelude::*;
-use crate::headless_transform::components::*;
 use crate::world::prelude::*;
 
 const DESTINATION_THRESHOLD: f32 = 4.;

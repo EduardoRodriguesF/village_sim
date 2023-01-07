@@ -1,5 +1,5 @@
 use super::prelude::*;
-use crate::headless_transform::components::*;
+use crate::prelude::*;
 use crate::world::prelude::*;
 
 pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {

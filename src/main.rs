@@ -1,18 +1,15 @@
-mod cursor;
 mod dev_tools;
-mod headless_transform;
+pub mod essentials;
 pub mod map;
 mod npc;
 mod physics;
-mod safe_despawn;
 pub mod utils;
 mod world;
 
 mod prelude {
-    pub use crate::headless_transform::components::*;
+    pub use crate::essentials::prelude::*;
     pub use crate::map::*;
     pub use crate::physics::prelude::*;
-    pub use crate::safe_despawn::ScheduledDespawn;
     pub use crate::utils::prelude::*;
     pub use crate::world::prelude::*;
     pub use bevy::prelude::*;
@@ -23,13 +20,11 @@ mod prelude {
     pub const SCREEN_HEIGHT: i32 = 592;
 }
 
-use cursor::CursorPlugin;
 use dev_tools::DevToolsPlugins;
-use headless_transform::HeadlessPositionPlugin;
-use physics::PhysicsPlugin;
+use essentials::EssentialPlugins;
 use npc::NpcPlugin;
+use physics::PhysicsPlugin;
 use prelude::*;
-use safe_despawn::SafeDespawnPlugin;
 use world::WorldPlugin;
 
 fn main() {
@@ -44,13 +39,11 @@ fn main() {
         },
         ..default()
     }))
+    .add_plugins(EssentialPlugins)
     .insert_resource(Map::from_ldtk("data/village.ldtk"))
     .add_plugin(PhysicsPlugin)
     .add_plugin(NpcPlugin)
-    .add_plugin(HeadlessPositionPlugin)
     .add_plugin(WorldPlugin)
-    .add_plugin(CursorPlugin)
-    .add_plugin(SafeDespawnPlugin)
     .add_startup_system(setup)
     .add_system(camera_movement);
 
