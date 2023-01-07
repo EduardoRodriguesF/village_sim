@@ -1,5 +1,5 @@
 use super::prelude::*;
-use crate::world::prelude::*;
+use crate::npc::prelude::*;
 use crate::FPS;
 
 pub fn apply_velocity(time: Res<Time>, mut query: Query<(&mut HeadlessTransform, &mut Velocity)>) {

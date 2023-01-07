@@ -1,4 +1,5 @@
 use super::prelude::*;
+use crate::npc::prelude::*;
 use crate::world::prelude::*;
 
 const DESTINATION_THRESHOLD: f32 = 4.;
