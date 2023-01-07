@@ -3,6 +3,7 @@ mod cursor;
 mod destinations;
 mod dev_tools;
 mod headless_transform;
+pub mod map;
 mod movement;
 mod safe_despawn;
 pub mod utils;
@@ -10,6 +11,7 @@ mod world;
 
 mod prelude {
     pub use crate::headless_transform::components::*;
+    pub use crate::map::*;
     pub use crate::safe_despawn::ScheduledDespawn;
     pub use crate::utils::prelude::*;
     pub use crate::world::prelude::*;
@@ -43,6 +45,7 @@ fn main() {
         },
         ..default()
     }))
+    .insert_resource(Map::from_ldtk("data/village.ldtk"))
     .add_plugin(HeadlessPositionPlugin)
     .add_plugin(WorldPlugin)
     .add_plugin(MovementPlugin)
