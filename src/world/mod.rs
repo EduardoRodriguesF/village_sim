@@ -3,6 +3,7 @@ pub mod prelude;
 pub mod resources;
 mod systems;
 
+use crate::prelude::*;
 use prelude::*;
 use systems::*;
 

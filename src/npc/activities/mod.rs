@@ -2,7 +2,7 @@ pub mod components;
 pub mod prelude;
 mod systems;
 
-use prelude::*;
+use crate::prelude::*;
 use systems::*;
 
 pub struct ActivitiesPlugin;

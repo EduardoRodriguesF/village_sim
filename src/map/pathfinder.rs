@@ -1,5 +1,6 @@
 use super::prelude::*;
 use crate::npc::prelude::*;
+use crate::prelude::*;
 
 #[derive(Default)]
 pub struct Pathfinder {

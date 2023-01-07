@@ -1,4 +1,4 @@
-use super::prelude::*;
+use crate::prelude::*;
 use bevy::sprite::Anchor;
 
 #[derive(Component, Default, Debug)]

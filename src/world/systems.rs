@@ -1,5 +1,5 @@
 use super::prelude::*;
-use crate::npc::activities::prelude::*;
+use crate::npc::prelude::*;
 
 const MAX_NPCS: u16 = 100;
 

@@ -1,4 +1,4 @@
-use super::prelude::*;
+use crate::prelude::*;
 
 #[derive(Resource, Default, Clone, Copy, Debug)]
 pub enum Weather {

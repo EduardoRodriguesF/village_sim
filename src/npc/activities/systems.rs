@@ -1,5 +1,5 @@
 use super::prelude::*;
-use crate::world::prelude::*;
+use crate::npc::prelude::*;
 use rand::distributions::WeightedIndex;
 use rand::prelude::*;
 

@@ -1,6 +1,7 @@
 pub mod pathfinder;
 pub mod prelude;
 
+pub use crate::prelude::*;
 pub use prelude::*;
 
 #[derive(Debug, PartialEq, Clone)]
