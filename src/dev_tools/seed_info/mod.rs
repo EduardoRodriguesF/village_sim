@@ -1,5 +1,4 @@
-use crate::world::prelude::*;
-use bevy::prelude::*;
+use crate::prelude::*;
 
 pub struct SeedInfoPlugin;
 
