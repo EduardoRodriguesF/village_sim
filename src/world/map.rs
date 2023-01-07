@@ -53,10 +53,16 @@ impl Map {
                 let mut row: Vec<Option<NodeData>> = Vec::new();
 
                 for (idx, path_cost) in path_cost_layer.int_grid_csv.iter().enumerate() {
+                    let fear_cost = match fear_cost_layer.int_grid_csv.get(idx) {
+                        Some(0) => 1,
+                        Some(v) => *v,
+                        None => 1,
+                    } as u8;
+
                     let next_item = match walls_layer.int_grid_csv.get(idx) {
                         Some(0) => Some(NodeData {
                             path_cost: *path_cost as u8,
-                            fear_cost: *fear_cost_layer.int_grid_csv.get(idx).unwrap() as u8,
+                            fear_cost,
                             roof: *roof_layer.int_grid_csv.get(idx).unwrap() as u8,
                         }),
                         _ => None,
