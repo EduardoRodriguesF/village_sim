@@ -1,3 +1,4 @@
 pub use super::components::*;
-pub use crate::destinations::prelude::*;
+pub use super::*;
+pub use crate::map::prelude::*;
 pub use crate::prelude::*;

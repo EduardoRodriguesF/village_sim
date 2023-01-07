@@ -1,6 +1,5 @@
 use super::prelude::*;
-use crate::activities::prelude::*;
-use crate::movement::prelude::*;
+use crate::npc::activities::prelude::*;
 
 const MAX_NPCS: u16 = 100;
 

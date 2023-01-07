@@ -5,9 +5,9 @@ mod systems;
 use bevy::prelude::*;
 use systems::*;
 
-pub struct MovementPlugin;
+pub struct PhysicsPlugin;
 
-impl Plugin for MovementPlugin {
+impl Plugin for PhysicsPlugin {
     fn build(&self, app: &mut App) {
         app.add_system(apply_direction.before(dynamic_collision))
             .add_system(dynamic_collision.before(apply_velocity))

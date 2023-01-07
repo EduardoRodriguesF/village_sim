@@ -1,6 +1,5 @@
 use super::prelude::*;
 use crate::headless_transform::components::*;
-use crate::movement::prelude::*;
 use crate::world::prelude::*;
 
 const DESTINATION_THRESHOLD: f32 = 4.;

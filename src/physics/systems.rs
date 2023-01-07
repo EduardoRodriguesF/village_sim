@@ -2,7 +2,6 @@ use super::prelude::*;
 use crate::headless_transform::components::*;
 use crate::world::prelude::*;
 use crate::FPS;
-use bevy::sprite::collide_aabb::collide;
 
 pub fn apply_velocity(time: Res<Time>, mut query: Query<(&mut HeadlessTransform, &mut Velocity)>) {
     let delta = time.delta_seconds() * FPS;

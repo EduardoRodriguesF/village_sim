@@ -1,4 +1,4 @@
-use crate::movement::prelude::*;
+use crate::physics::prelude::*;
 use crate::prelude::*;
 use bevy::prelude::*;
 use bevy_prototype_debug_lines::DebugLines;

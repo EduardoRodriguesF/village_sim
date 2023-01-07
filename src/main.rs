@@ -1,10 +1,9 @@
-mod activities;
 mod cursor;
-mod destinations;
 mod dev_tools;
 mod headless_transform;
 pub mod map;
-mod movement;
+mod npc;
+mod physics;
 mod safe_despawn;
 pub mod utils;
 mod world;
@@ -12,6 +11,7 @@ mod world;
 mod prelude {
     pub use crate::headless_transform::components::*;
     pub use crate::map::*;
+    pub use crate::physics::prelude::*;
     pub use crate::safe_despawn::ScheduledDespawn;
     pub use crate::utils::prelude::*;
     pub use crate::world::prelude::*;
@@ -23,12 +23,11 @@ mod prelude {
     pub const SCREEN_HEIGHT: i32 = 592;
 }
 
-use activities::ActivitiesPlugin;
 use cursor::CursorPlugin;
-use destinations::DestinationsPlugin;
 use dev_tools::DevToolsPlugins;
 use headless_transform::HeadlessPositionPlugin;
-use movement::MovementPlugin;
+use physics::PhysicsPlugin;
+use npc::NpcPlugin;
 use prelude::*;
 use safe_despawn::SafeDespawnPlugin;
 use world::WorldPlugin;
@@ -46,11 +45,10 @@ fn main() {
         ..default()
     }))
     .insert_resource(Map::from_ldtk("data/village.ldtk"))
+    .add_plugin(PhysicsPlugin)
+    .add_plugin(NpcPlugin)
     .add_plugin(HeadlessPositionPlugin)
     .add_plugin(WorldPlugin)
-    .add_plugin(MovementPlugin)
-    .add_plugin(DestinationsPlugin)
-    .add_plugin(ActivitiesPlugin)
     .add_plugin(CursorPlugin)
     .add_plugin(SafeDespawnPlugin)
     .add_startup_system(setup)
