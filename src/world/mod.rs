@@ -12,7 +12,7 @@ pub struct WorldPlugin;
 impl Plugin for WorldPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<Seed>()
-            .insert_resource(Weather::Rain)
+            .init_resource::<Weather>()
             .insert_resource(Map::from_ldtk("data/village.ldtk"))
             .add_startup_system(create_walls)
             .add_startup_system(spawn_entities)
