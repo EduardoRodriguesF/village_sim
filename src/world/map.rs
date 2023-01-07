@@ -165,9 +165,9 @@ impl Pathfinder {
 
     pub fn find_path_by_vec2(&self, start: Vec2, goal: Vec2) -> Option<(Vec<Vec2>, u32)> {
         let start = self.map.vec2_to_node(&start);
-        let goal = self.map.vec2_to_node(&goal);
+        let node_goal = self.map.vec2_to_node(&goal);
 
-        if let Some((nodes, cost)) = self.find_path(start, goal) {
+        if let Some((nodes, cost)) = self.find_path(start, node_goal) {
             let mut instructions: Vec<Vec2> = nodes
                 .iter()
                 .map(|node| self.map.node_to_vec2(*node))
@@ -194,6 +194,8 @@ impl Pathfinder {
                         if !y_range.contains(&step.y) {
                             step.y += rng.gen_range(variation_range.clone());
                         }
+                    } else {
+                        *step = goal;
                     }
 
                     last_step = *step;
