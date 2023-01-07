@@ -179,9 +179,11 @@ impl Pathfinder {
                 let mut last_step = instructions[0];
                 let mut rng = rng.to_owned();
 
-                instructions = instructions
-                    .iter_mut()
-                    .map(|mut step| {
+                let mut iter = instructions.iter_mut().peekable();
+                let mut instructions = Vec::new();
+
+                while let Some(mut step) = iter.next() {
+                    if iter.peek().is_some() {
                         let x_range = (last_step.x - variation)..(last_step.x + variation);
                         let y_range = (last_step.y - variation)..(last_step.y + variation);
 
@@ -192,12 +194,11 @@ impl Pathfinder {
                         if !y_range.contains(&step.y) {
                             step.y += rng.gen_range(variation_range.clone());
                         }
+                    }
 
-                        last_step = *step;
-
-                        *step
-                    })
-                    .collect();
+                    last_step = *step;
+                    instructions.push(*step);
+                }
             }
 
             return Some((instructions, cost));
