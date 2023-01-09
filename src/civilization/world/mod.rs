@@ -1,8 +1,8 @@
 pub mod components;
+mod debug;
 pub mod prelude;
 pub mod resources;
 mod systems;
-mod debug;
 
 use crate::prelude::*;
 use systems::*;

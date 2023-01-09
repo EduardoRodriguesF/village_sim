@@ -1,7 +1,7 @@
 pub mod components;
+mod debug;
 pub mod prelude;
 mod systems;
-mod debug;
 
 use bevy::prelude::*;
 use systems::*;
