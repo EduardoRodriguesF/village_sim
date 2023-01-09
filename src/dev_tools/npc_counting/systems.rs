@@ -1,6 +1,5 @@
 use super::prelude::*;
 use crate::npc::prelude::*;
-use crate::prelude::*;
 
 pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     let text_section = move |color, value: &str| {

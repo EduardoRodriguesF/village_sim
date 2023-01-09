@@ -1,18 +1,16 @@
+pub mod civilization;
 pub mod dev_tools;
 pub mod essentials;
 pub mod map;
-pub mod npc;
 pub mod physics;
 pub mod prelude;
 pub mod utils;
-pub mod world;
 
+use civilization::*;
 use dev_tools::*;
 use essentials::*;
-use npc::*;
 use physics::*;
 use prelude::*;
-use world::*;
 
 pub struct GamePlugin;
 
@@ -21,8 +19,7 @@ impl Plugin for GamePlugin {
         app.add_plugins(EssentialPlugins)
             .insert_resource(Map::from_ldtk("data/village.ldtk"))
             .add_plugin(PhysicsPlugin)
-            .add_plugin(NpcPlugin)
-            .add_plugin(WorldPlugin)
+            .add_plugin(CivilizationPlugin)
             .add_startup_system(setup)
             .add_system(camera_movement);
 
