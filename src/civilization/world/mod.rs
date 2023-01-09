@@ -2,6 +2,7 @@ pub mod components;
 pub mod prelude;
 pub mod resources;
 mod systems;
+mod debug;
 
 use crate::prelude::*;
 use systems::*;
@@ -14,5 +15,9 @@ impl Plugin for WorldPlugin {
             .add_startup_system(create_walls)
             .add_startup_system(spawn_entities)
             .add_system(populate);
+
+        if cfg!(debug_assertions) {
+            app.add_plugins(debug::WorldDebugPlugins);
+        }
     }
 }
