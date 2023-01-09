@@ -1,19 +1,11 @@
-use crate::physics::prelude::*;
+use super::prelude::*;
 use crate::prelude::*;
 use bevy::prelude::*;
 use bevy_prototype_debug_lines::DebugLines;
 
 const BOX_COLOR: Color = Color::RED;
 
-pub struct DebugCollidersPlugin;
-
-impl Plugin for DebugCollidersPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_system(draw_colliders);
-    }
-}
-
-fn draw_colliders(
+pub fn draw_colliders(
     mut lines: ResMut<DebugLines>,
     q_colliders: Query<(&HeadlessTransform, &Collider)>,
 ) {

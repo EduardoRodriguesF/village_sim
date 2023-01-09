@@ -1,5 +1,4 @@
 pub mod benchmark;
-pub mod debug_colliders;
 pub mod npc_counting;
 pub mod npc_tools;
 pub mod prelude;
@@ -18,7 +17,6 @@ impl PluginGroup for DevToolsPlugins {
             .add(NpcToolsPlugin)
             .add(NpcCountingPlugin)
             .add(TimeManipulationPlugin)
-            .add(DebugCollidersPlugin)
             .add(WeatherToolsPlugin)
             .add(FrameTimeDiagnosticsPlugin::default())
             .add(DebugLinesPlugin::default())
