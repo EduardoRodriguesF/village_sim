@@ -174,13 +174,16 @@ pub fn create_npc(
 
 pub fn trace_path(
     mut lines: ResMut<DebugLines>,
-    q_tracked: Query<(&HeadlessTransform, &InstructionsToDestination), With<DebugTracking>>,
+    scale: Res<PixelScale>,
+    q_tracked: Query<(&Transform, &InstructionsToDestination), With<DebugTracking>>,
 ) {
+    let scale = scale.extended_splat();
+
     if let Ok((transform, instructions)) = q_tracked.get_single() {
         let mut last_step = transform.translation;
 
         for step in instructions.iter() {
-            let step = step.extend(1.);
+            let step = step.extend(1.) * scale;
 
             lines.line(last_step, step, 0.);
 
