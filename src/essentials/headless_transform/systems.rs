@@ -1,12 +1,12 @@
 use crate::prelude::*;
 use bevy::prelude::*;
 
-pub fn translate_transform(mut query: Query<(&HeadlessTransform, &mut Transform)>) {
-    const DIMENSIONAL_SCALE: Vec3 = Vec3::splat(SCALE);
+pub fn translate_transform(scale: Res<PixelScale>, mut query: Query<(&HeadlessTransform, &mut Transform)>) {
+    let scale = Vec3::splat(**scale);
 
     for (headless, mut transform) in query.iter_mut() {
-        transform.translation = (headless.translation * DIMENSIONAL_SCALE).round();
-        transform.scale = headless.scale * DIMENSIONAL_SCALE;
+        transform.translation = (headless.translation * scale).round();
+        transform.scale = headless.scale * scale;
         transform.rotation = headless.rotation;
     }
 }
