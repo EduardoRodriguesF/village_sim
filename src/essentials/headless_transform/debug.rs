@@ -8,3 +8,9 @@ pub fn manual_scale_change(mut scroll_evr: EventReader<MouseWheel>, mut scale: R
         scale.0 += delta;
     }
 }
+
+pub fn notify_scale_change(scale: Res<PixelScale>) {
+    if scale.is_changed() {
+        info!("Scale: {:?}", scale.0);
+    }
+}
