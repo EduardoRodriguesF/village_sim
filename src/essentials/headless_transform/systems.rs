@@ -10,3 +10,9 @@ pub fn translate_transform(scale: Res<PixelScale>, mut query: Query<(&HeadlessTr
         transform.rotation = headless.rotation;
     }
 }
+
+pub fn transition_scale(mut scale: ResMut<PixelScale>, target_scale: Res<TargetScale>) {
+    if target_scale.value != scale.0 {
+        scale.0 = approach(scale.0, target_scale.value, target_scale.speed);
+    }
+}

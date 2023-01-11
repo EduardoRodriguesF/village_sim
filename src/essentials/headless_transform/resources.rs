@@ -18,3 +18,18 @@ impl Default for PixelScale {
         Self(1.)
     }
 }
+
+#[derive(Resource, Debug)]
+pub struct TargetScale {
+    pub value: f32,
+    pub speed: f32,
+}
+
+impl Default for TargetScale {
+    fn default() -> Self {
+        TargetScale {
+            value: PixelScale::default().0,
+            speed: 0.025,
+        }
+    }
+}
