@@ -1,7 +1,10 @@
 use crate::prelude::*;
 use bevy::input::mouse::*;
 
-pub fn manual_scale_change(mut scroll_evr: EventReader<MouseWheel>, mut target_scale: ResMut<TargetScale>) {
+pub fn manual_scale_change(
+    mut scroll_evr: EventReader<MouseWheel>,
+    mut target_scale: ResMut<TargetScale>,
+) {
     for ev in scroll_evr.iter() {
         let delta = ev.y / 10.;
 
