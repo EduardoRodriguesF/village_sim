@@ -29,7 +29,7 @@ impl Default for TargetScale {
     fn default() -> Self {
         TargetScale {
             value: PixelScale::default().0,
-            speed: 0.025,
+            speed: 0.25,
         }
     }
 }

@@ -1,5 +1,6 @@
 use crate::prelude::*;
 use bevy::prelude::*;
+use lerp::Lerp;
 
 pub fn translate_transform(
     scale: Res<PixelScale>,
@@ -21,7 +22,7 @@ pub fn transition_scale(
 ) {
     if target_scale.value != scale.0 {
         let prev = scale.0;
-        scale.0 = approach(scale.0, target_scale.value, target_scale.speed);
+        scale.0 = scale.lerp(target_scale.value, target_scale.speed);
 
         if let Ok(mut transform) = q_camera.get_single_mut() {
             let delta = scale.0 - prev;
