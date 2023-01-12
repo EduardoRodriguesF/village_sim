@@ -14,7 +14,7 @@ pub struct CursorPlugin;
 impl Plugin for CursorPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<Cursor>()
-            .add_system(update_cursor_position);
+            .add_system_to_stage(CoreStage::First, update_cursor_position);
     }
 }
 
