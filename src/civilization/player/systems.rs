@@ -44,5 +44,10 @@ pub fn movement_input(
         } else {
             vel.y = 0.0;
         }
+
+        if keys.pressed(KeyCode::LShift) {
+            vel.x *= 2.;
+            vel.y *= 2.;
+        }
     }
 }
