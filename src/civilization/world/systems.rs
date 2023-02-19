@@ -53,7 +53,7 @@ pub fn spawn_entities(mut commands: Commands, map: Res<Map>) {
 pub fn populate(
     mut commands: Commands,
     mut seed: ResMut<Seed>,
-    q_npcs: Query<Entity, With<NpcStats>>,
+    q_npcs: Query<With<NpcStats>>,
     q_entrances: Query<(&HeadlessTransform, &Activity), With<Entrance>>,
 ) {
     let population = q_npcs.iter().len() as u16;
