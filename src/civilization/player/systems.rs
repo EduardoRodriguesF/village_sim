@@ -10,7 +10,7 @@ pub fn spawn_player(
     commands.spawn((
         SpriteBundle {
             sprite: Sprite {
-                color: Color::LIME_GREEN,
+                color: Color::BLACK,
                 rect: Some(Rect::new(0., 0., 16., 32.)),
                 anchor: bevy::sprite::Anchor::BottomCenter,
                 ..default()
