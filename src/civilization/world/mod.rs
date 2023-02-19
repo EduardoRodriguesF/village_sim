@@ -12,8 +12,8 @@ pub struct WorldPlugin;
 impl Plugin for WorldPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<Weather>()
+            .add_system_to_stage(CoreStage::First, spawn_entities)
             .add_startup_system(create_walls)
-            .add_startup_system(spawn_entities)
             .add_system(populate);
 
         if cfg!(debug_assertions) {
