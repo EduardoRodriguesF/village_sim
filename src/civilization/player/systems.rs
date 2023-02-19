@@ -23,3 +23,26 @@ pub fn spawn_player(
         PlayerTag,
     ));
 }
+
+pub fn movement_input(
+    keys: Res<Input<KeyCode>>,
+    mut q_player: Query<&mut Velocity, With<PlayerTag>>,
+) {
+    if let Ok(mut vel) = q_player.get_single_mut() {
+        if keys.pressed(KeyCode::D) {
+            vel.x = 1.0;
+        } else if keys.pressed(KeyCode::A) {
+            vel.x = -1.0;
+        } else {
+            vel.x = 0.0;
+        }
+
+        if keys.pressed(KeyCode::W) {
+            vel.y = 1.0;
+        } else if keys.pressed(KeyCode::S) {
+            vel.y = -1.0;
+        } else {
+            vel.y = 0.0;
+        }
+    }
+}
