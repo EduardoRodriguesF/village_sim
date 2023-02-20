@@ -2,6 +2,7 @@ use super::prelude::*;
 use crate::npc::prelude::*;
 use crate::FPS;
 
+/// Translates entities position based on its current `Velocity`.
 pub fn apply_velocity(time: Res<Time>, mut query: Query<(&mut HeadlessTransform, &mut Velocity)>) {
     let delta = time.delta_seconds() * FPS;
 
@@ -19,6 +20,7 @@ pub fn apply_velocity(time: Res<Time>, mut query: Query<(&mut HeadlessTransform,
     }
 }
 
+/// Uses `MovementIntention` to create new `Velocity` value.
 pub fn apply_direction(
     mut commands: Commands,
     mut query: Query<(Entity, &MovementIntention, &NpcStats)>,
@@ -33,6 +35,7 @@ pub fn apply_direction(
     }
 }
 
+/// Handles collision between moving entities.
 pub fn dynamic_collision(mut q_colliders: Query<(&mut Velocity, &HeadlessTransform, &Collider)>) {
     let mut combinations = q_colliders.iter_combinations_mut();
     while let Some([a1, a2]) = combinations.fetch_next() {

@@ -9,6 +9,7 @@ pub struct Cursor {
     pub relative_position: Option<Vec2>,
 }
 
+/// Abstraction of cursor position without dealing directly with `Windows` everytime.
 pub struct CursorPlugin;
 
 impl Plugin for CursorPlugin {
@@ -18,6 +19,7 @@ impl Plugin for CursorPlugin {
     }
 }
 
+/// Updates `Cursor` position values.
 fn update_cursor_position(
     mut cursor: ResMut<Cursor>,
     windows: Res<Windows>,

@@ -37,6 +37,7 @@ pub struct Map {
 }
 
 impl Map {
+    /// Create `Map` based on LDTK file.
     pub fn from_ldtk(file: &str) -> Self {
         let ldtk = ldtk_rust::Project::new(file);
         let mut data: Vec<Vec<Option<NodeData>>> = Vec::new();
