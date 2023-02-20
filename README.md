@@ -1,4 +1,6 @@
-# WIP
+# Village Simulation
+
+⚠️ WIP
 
 This project aims to be a collection of systems to create a rich civilization simulation for games using the [Bevy engine](https://bevyengine.org/).
 
