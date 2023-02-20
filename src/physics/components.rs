@@ -26,12 +26,10 @@ pub struct MovementIntention {
 }
 
 impl MovementIntention {
-    pub fn new(x: f32, y: f32) -> Self {
-        Self { x, y }
-    }
+    pub const ZERO: Self = Self::new(0.0, 0.0);
 
-    pub fn zero() -> Self {
-        Self::new(0., 0.)
+    pub const fn new(x: f32, y: f32) -> Self {
+        Self { x, y }
     }
 }
 

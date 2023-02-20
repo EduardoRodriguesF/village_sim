@@ -20,7 +20,7 @@ pub fn reconsider_path(mut commands: Commands, q_npcs: Query<Entity, With<Recons
     for entity in q_npcs.iter() {
         commands
             .entity(entity)
-            .insert(MovementIntention::zero())
+            .insert(MovementIntention::ZERO)
             .remove::<(InstructionsToDestination, ReconsiderPath)>();
     }
 }
@@ -74,7 +74,7 @@ pub fn follow_instructions(
             }
         } else {
             entity.remove::<(DestinationPoint, InstructionsToDestination)>();
-            entity.insert(MovementIntention::zero());
+            entity.insert(MovementIntention::ZERO);
         }
     }
 }
