@@ -9,11 +9,15 @@ pub struct Velocity {
 }
 
 impl Velocity {
-    pub fn new(x: f32, y: f32) -> Self {
-        Self { x, y, ..default() }
+    pub const fn new(x: f32, y: f32) -> Self {
+        Self {
+            x,
+            y,
+            one_time_speed: None,
+        }
     }
 
-    pub fn as_vec2(&self) -> Vec2 {
+    pub const fn as_vec2(&self) -> Vec2 {
         Vec2::new(self.x, self.y)
     }
 }
@@ -40,7 +44,7 @@ pub struct Collider {
 }
 
 impl Collider {
-    pub fn new(size: Vec2, anchor: Anchor) -> Self {
+    pub const fn new(size: Vec2, anchor: Anchor) -> Self {
         Self { size, anchor }
     }
 }
