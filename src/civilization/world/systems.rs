@@ -1,7 +1,5 @@
 use crate::npc::prelude::*;
 
-const MAX_NPCS: u16 = 100;
-
 pub fn spawn_entities(mut commands: Commands, map: Res<Map>) {
     for entity in map.entities.iter() {
         let area = Rect::new(0., 0., entity.width as f32, entity.height as f32);
@@ -53,6 +51,7 @@ pub fn spawn_entities(mut commands: Commands, map: Res<Map>) {
 pub fn populate(
     mut commands: Commands,
     mut seed: ResMut<Seed>,
+    max_population: Res<MaxPopulation>,
     q_npcs: Query<With<NpcStats>>,
     q_entrances: Query<(&HeadlessTransform, &Activity), With<Entrance>>,
 ) {
@@ -61,11 +60,11 @@ pub fn populate(
         .iter()
         .collect::<Vec<(&HeadlessTransform, &Activity)>>();
 
-    if population >= MAX_NPCS {
+    if population.cmp(&max_population).is_ge() {
         return;
     }
 
-    for _ in population..MAX_NPCS {
+    for _ in population..**max_population {
         let r: f32 = seed.rng.gen();
         let g: f32 = seed.rng.gen();
         let b: f32 = seed.rng.gen();

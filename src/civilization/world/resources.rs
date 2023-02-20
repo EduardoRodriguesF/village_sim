@@ -58,3 +58,6 @@ impl Weather {
         }
     }
 }
+
+#[derive(Resource, Debug, Deref, DerefMut)]
+pub struct MaxPopulation(pub u16);

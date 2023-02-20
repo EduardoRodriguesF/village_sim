@@ -11,7 +11,8 @@ pub struct WorldPlugin;
 
 impl Plugin for WorldPlugin {
     fn build(&self, app: &mut App) {
-        app.init_resource::<Weather>()
+        app.insert_resource(MaxPopulation(100))
+            .init_resource::<Weather>()
             .add_startup_system_to_stage(StartupStage::PreStartup, spawn_entities)
             .add_startup_system(create_walls)
             .add_system(populate);
