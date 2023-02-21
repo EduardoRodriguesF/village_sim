@@ -86,6 +86,7 @@ pub fn collision(
                 static_collider.size,
             )
             .is_some()
+                // Prevent infinite loop when entity is stuck
                 && velocity.x != 0.
             {
                 // Find mininum velocity before colliding
