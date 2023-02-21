@@ -122,6 +122,7 @@ pub fn create_walls(mut commands: Commands, map: Res<Map>) {
                         row_idx as f32 * 16.,
                         1.,
                     )),
+                    Collider::new(Vec2::splat(16.), bevy::sprite::Anchor::Center),
                 ));
             }
         }
