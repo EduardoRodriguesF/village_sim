@@ -62,3 +62,50 @@ pub fn dynamic_collision(mut q_colliders: Query<(&mut Velocity, &HeadlessTransfo
         }
     }
 }
+
+/// Handles collision between moving and static entities.
+pub fn collision(
+    mut q_movers: Query<(&mut Velocity, &HeadlessTransform, &Collider)>,
+    q_statics: Query<(&HeadlessTransform, &Collider), Without<Velocity>>,
+) {
+    let mut iter_movers = q_movers.iter_mut();
+    let mut iter_statics = q_statics.iter();
+
+    while let Some((mut velocity, mover_transform, mover_collider)) = iter_movers.next() {
+        while let Some((static_transform, static_collider)) = iter_statics.next() {
+            // Colliders position
+            let mover_pos = mover_transform.translation.truncate() + mover_collider.offset();
+            let static_projection =
+                static_transform.translation.truncate() + static_collider.offset();
+
+            // Horizontal collision
+            while collide(
+                (mover_pos + velocity.as_vec2() * Vec2::X).extend(1.),
+                mover_collider.size,
+                static_projection.extend(1.),
+                static_collider.size,
+            )
+            .is_some()
+                && velocity.x != 0.
+            {
+                // Find mininum velocity before colliding
+                velocity.x = approach(velocity.x, 0., 0.25);
+            }
+
+            // Vertical collision
+            while collide(
+                (mover_pos + velocity.as_vec2() * Vec2::Y).extend(1.),
+                mover_collider.size,
+                static_projection.extend(1.),
+                static_collider.size,
+            )
+            .is_some()
+                && velocity.y != 0.
+            {
+                velocity.y = approach(velocity.y, 0., 0.25);
+            }
+        }
+
+        iter_statics = q_statics.iter();
+    }
+}

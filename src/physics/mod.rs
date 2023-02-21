@@ -10,8 +10,15 @@ pub struct PhysicsPlugin;
 
 impl Plugin for PhysicsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(apply_direction.before(dynamic_collision))
-            .add_system(dynamic_collision.before(apply_velocity))
+        app.add_system(apply_direction.before("Collisions"))
+            .add_system_set(
+                SystemSet::new()
+                    .label("Collisions")
+                    .before(apply_velocity)
+                    .after(apply_direction)
+                    .with_system(dynamic_collision)
+                    .with_system(collision.after(dynamic_collision)),
+            )
             .add_system(apply_velocity);
 
         if cfg!(debug_assertions) {
