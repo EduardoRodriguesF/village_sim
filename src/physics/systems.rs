@@ -106,7 +106,7 @@ pub fn collision(
     }
 }
 
-/// Detects weather an entity is stuck and marks it.
+/// Detects wether an entity is stuck and marks it.
 ///
 /// An entity is considered stuck when there is collision detection on his current position, which
 /// previous systems should have prohibited.
