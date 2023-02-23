@@ -10,18 +10,16 @@ pub struct PhysicsPlugin;
 
 impl Plugin for PhysicsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(apply_direction.before("Collisions"))
+        app.add_system(apply_direction.before("collision"))
             .add_system_set(
                 SystemSet::new()
-                    .label("Collisions")
-                    .before(apply_velocity)
-                    .after(apply_direction)
+                    .label("collision")
                     .with_system(dynamic_collision)
                     .with_system(collision.after(dynamic_collision))
                     .with_system(detect_stuck)
                     .with_system(unstuck),
             )
-            .add_system(apply_velocity);
+            .add_system(apply_velocity.after("collision"));
 
         if cfg!(debug_assertions) {
             app.add_system(debug::draw_colliders);
