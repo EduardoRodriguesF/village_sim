@@ -68,11 +68,8 @@ pub fn collision(
     mut q_movers: Query<(&mut Velocity, &HeadlessTransform, &Collider)>,
     q_statics: Query<(&HeadlessTransform, &Collider), Without<Velocity>>,
 ) {
-    let mut iter_movers = q_movers.iter_mut();
-    let mut iter_statics = q_statics.iter();
-
-    while let Some((mut velocity, mover_transform, mover_collider)) = iter_movers.next() {
-        while let Some((static_transform, static_collider)) = iter_statics.next() {
+    for (mut velocity, mover_transform, mover_collider) in q_movers.iter_mut() {
+        for (static_transform, static_collider) in q_statics.iter() {
             // Colliders position
             let mover_pos = mover_transform.translation.truncate() + mover_collider.offset();
             let static_projection =
@@ -106,8 +103,6 @@ pub fn collision(
                 velocity.y = approach(velocity.y, 0., 0.25);
             }
         }
-
-        iter_statics = q_statics.iter();
     }
 }
 
