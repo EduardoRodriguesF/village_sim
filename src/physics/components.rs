@@ -55,4 +55,4 @@ impl Collider {
 
 #[derive(Component)]
 #[component(storage = "SparseSet")]
-pub struct Stuck(pub Entity);
+pub struct Stuck;

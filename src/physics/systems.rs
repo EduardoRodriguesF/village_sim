@@ -109,10 +109,10 @@ pub fn collision(
 pub fn detect_stuck(
     mut commands: Commands,
     q_movers: Query<(Entity, &HeadlessTransform, &Collider), With<Velocity>>,
-    q_walls: Query<(Entity, &HeadlessTransform, &Collider), Without<Velocity>>,
+    q_walls: Query<(&HeadlessTransform, &Collider), Without<Velocity>>,
 ) {
     for (mover_entity, mover_transform, mover_collider) in q_movers.iter() {
-        for (wall_entity, wall_transform, wall_collider) in q_walls.iter() {
+        for (wall_transform, wall_collider) in q_walls.iter() {
             if collide(
                 mover_transform.translation + mover_collider.offset().extend(0.),
                 mover_collider.size,
@@ -121,7 +121,7 @@ pub fn detect_stuck(
             )
             .is_some()
             {
-                commands.entity(mover_entity).insert(Stuck(wall_entity));
+                commands.entity(mover_entity).insert(Stuck);
             }
         }
     }
@@ -130,7 +130,7 @@ pub fn detect_stuck(
 pub fn unstuck(
     mut seed: ResMut<Seed>,
     mut commands: Commands,
-    mut q_stucks: Query<(Entity, &mut HeadlessTransform, &Collider, &Stuck), With<Velocity>>,
+    mut q_stucks: Query<(Entity, &mut HeadlessTransform, &Collider), (With<Velocity>, With<Stuck>)>,
     q_walls: Query<(&HeadlessTransform, &Collider), Without<Velocity>>,
 ) {
     let mut directions = vec![
@@ -143,8 +143,8 @@ pub fn unstuck(
     // Prevent stuck loops
     directions.shuffle(&mut seed.rng);
 
-    for (entity, mut transform, collider, stuck) in q_stucks.iter_mut() {
-        if let Ok((wall_transform, wall_collider)) = q_walls.get(stuck.0) {
+    for (entity, mut transform, collider) in q_stucks.iter_mut() {
+        for (wall_transform, wall_collider) in q_walls.iter() {
             let mut i = 0;
 
             'outer: loop {
