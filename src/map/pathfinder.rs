@@ -95,11 +95,16 @@ impl Pathfinder {
         None
     }
 
+    pub fn is_successor_ignored(&self, x: i16, y: i16) -> bool {
+        // Ignores middle and diagonals
+        x + y == 0 || (x + y).abs() == 2
+    }
+
     pub fn get_successors(&self, node: &MapNode) -> Vec<Successor> {
         let mut successors = Vec::new();
         for dx in -1i16..=1 {
             for dy in -1i16..=1 {
-                if dx == 0 && dy == 0 {
+                if self.is_successor_ignored(dx, dy) {
                     continue;
                 }
 
