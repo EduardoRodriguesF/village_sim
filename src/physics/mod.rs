@@ -17,7 +17,9 @@ impl Plugin for PhysicsPlugin {
                     .before(apply_velocity)
                     .after(apply_direction)
                     .with_system(dynamic_collision)
-                    .with_system(collision.after(dynamic_collision)),
+                    .with_system(collision.after(dynamic_collision))
+                    .with_system(detect_stuck)
+                    .with_system(unstuck),
             )
             .add_system(apply_velocity);
 

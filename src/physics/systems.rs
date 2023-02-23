@@ -110,3 +110,72 @@ pub fn collision(
         iter_statics = q_statics.iter();
     }
 }
+
+pub fn detect_stuck(
+    mut commands: Commands,
+    q_movers: Query<(Entity, &HeadlessTransform, &Collider), With<Velocity>>,
+    q_walls: Query<(Entity, &HeadlessTransform, &Collider), Without<Velocity>>,
+) {
+    for (mover_entity, mover_transform, mover_collider) in q_movers.iter() {
+        for (wall_entity, wall_transform, wall_collider) in q_walls.iter() {
+            if collide(
+                mover_transform.translation + mover_collider.offset().extend(0.),
+                mover_collider.size,
+                wall_transform.translation + wall_collider.offset().extend(0.),
+                wall_collider.size,
+            )
+            .is_some()
+            {
+                commands.entity(mover_entity).insert(Stuck(wall_entity));
+            }
+        }
+    }
+}
+
+pub fn unstuck(
+    mut seed: ResMut<Seed>,
+    mut commands: Commands,
+    mut q_stucks: Query<(Entity, &mut HeadlessTransform, &Collider, &Stuck), With<Velocity>>,
+    q_walls: Query<(&HeadlessTransform, &Collider), Without<Velocity>>,
+) {
+    let mut directions = vec![
+        Vec2::new(1., 0.),
+        Vec2::new(0., 1.),
+        Vec2::new(-1., 0.),
+        Vec2::new(0., -1.),
+    ];
+
+    // Prevent stuck loops
+    directions.shuffle(&mut seed.rng);
+
+    for (entity, mut transform, collider, stuck) in q_stucks.iter_mut() {
+        if let Ok((wall_transform, wall_collider)) = q_walls.get(stuck.0) {
+            let mut i = 0;
+
+            'outer: loop {
+                for dir in directions.iter() {
+                    // Continuously increase direction range until unstuck.
+                    let dir = *dir * Vec2::splat(i as f32);
+
+                    if collide(
+                        (transform.translation.truncate() + collider.offset() + dir).extend(1.),
+                        collider.size,
+                        wall_transform.translation + wall_collider.offset().extend(0.),
+                        wall_collider.size,
+                    )
+                    .is_none()
+                    {
+                        commands.entity(entity).remove::<Stuck>();
+
+                        // Apply translation to unstuck.
+                        transform.translation += dir.extend(0.);
+
+                        break 'outer;
+                    }
+                }
+
+                i += 1;
+            }
+        }
+    }
+}

@@ -52,3 +52,7 @@ impl Collider {
         self.size * self.anchor.as_vec()
     }
 }
+
+#[derive(Component)]
+#[component(storage = "SparseSet")]
+pub struct Stuck(pub Entity);
