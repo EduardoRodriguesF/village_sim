@@ -106,6 +106,10 @@ pub fn collision(
     }
 }
 
+/// Detects weather an entity is stuck and marks it.
+///
+/// An entity is considered stuck when there is collision detection on his current position, which
+/// previous systems should have prohibited.
 pub fn detect_stuck(
     mut commands: Commands,
     q_movers: Query<(Entity, &HeadlessTransform, &Collider), With<Velocity>>,
@@ -127,6 +131,7 @@ pub fn detect_stuck(
     }
 }
 
+/// Finds the nearest free spot and moves entity to it.
 pub fn unstuck(
     mut seed: ResMut<Seed>,
     mut commands: Commands,
