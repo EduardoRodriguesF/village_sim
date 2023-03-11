@@ -62,3 +62,120 @@ pub fn dynamic_collision(mut q_colliders: Query<(&mut Velocity, &HeadlessTransfo
         }
     }
 }
+
+/// Handles collision between moving and static entities.
+pub fn collision(
+    mut q_movers: Query<(&mut Velocity, &HeadlessTransform, &Collider)>,
+    q_statics: Query<(&HeadlessTransform, &Collider), Without<Velocity>>,
+) {
+    for (mut velocity, mover_transform, mover_collider) in q_movers.iter_mut() {
+        for (static_transform, static_collider) in q_statics.iter() {
+            // Colliders position
+            let mover_pos = mover_transform.translation.truncate() + mover_collider.offset();
+            let static_projection =
+                static_transform.translation.truncate() + static_collider.offset();
+
+            // Horizontal collision
+            while collide(
+                (mover_pos + velocity.as_vec2() * Vec2::X).extend(1.),
+                mover_collider.size,
+                static_projection.extend(1.),
+                static_collider.size,
+            )
+            .is_some()
+                // Prevent infinite loop when entity is stuck
+                && velocity.x != 0.
+            {
+                // Find mininum velocity before colliding
+                velocity.x = approach(velocity.x, 0., 0.25);
+            }
+
+            // Vertical collision
+            while collide(
+                (mover_pos + velocity.as_vec2() * Vec2::Y).extend(1.),
+                mover_collider.size,
+                static_projection.extend(1.),
+                static_collider.size,
+            )
+            .is_some()
+                && velocity.y != 0.
+            {
+                velocity.y = approach(velocity.y, 0., 0.25);
+            }
+        }
+    }
+}
+
+/// Detects wether an entity is stuck and marks it.
+///
+/// An entity is considered stuck when there is collision detection on his current position, which
+/// previous systems should have prohibited.
+pub fn detect_stuck(
+    mut commands: Commands,
+    q_movers: Query<(Entity, &HeadlessTransform, &Collider), With<Velocity>>,
+    q_walls: Query<(&HeadlessTransform, &Collider), Without<Velocity>>,
+) {
+    for (mover_entity, mover_transform, mover_collider) in q_movers.iter() {
+        for (wall_transform, wall_collider) in q_walls.iter() {
+            if collide(
+                mover_transform.translation + mover_collider.offset().extend(0.),
+                mover_collider.size,
+                wall_transform.translation + wall_collider.offset().extend(0.),
+                wall_collider.size,
+            )
+            .is_some()
+            {
+                commands.entity(mover_entity).insert(Stuck);
+            }
+        }
+    }
+}
+
+/// Finds the nearest free spot and moves entity to it.
+pub fn unstuck(
+    mut seed: ResMut<Seed>,
+    mut commands: Commands,
+    mut q_stucks: Query<(Entity, &mut HeadlessTransform, &Collider), (With<Velocity>, With<Stuck>)>,
+    q_walls: Query<(&HeadlessTransform, &Collider), Without<Velocity>>,
+) {
+    let mut directions = vec![
+        Vec2::new(1., 0.),
+        Vec2::new(0., 1.),
+        Vec2::new(-1., 0.),
+        Vec2::new(0., -1.),
+    ];
+
+    // Prevent stuck loops
+    directions.shuffle(&mut seed.rng);
+
+    for (entity, mut transform, collider) in q_stucks.iter_mut() {
+        for (wall_transform, wall_collider) in q_walls.iter() {
+            let mut i = 0;
+
+            'outer: loop {
+                for dir in directions.iter() {
+                    // Continuously increase direction range until unstuck.
+                    let dir = *dir * Vec2::splat(i as f32);
+
+                    if collide(
+                        (transform.translation.truncate() + collider.offset() + dir).extend(1.),
+                        collider.size,
+                        wall_transform.translation + wall_collider.offset().extend(0.),
+                        wall_collider.size,
+                    )
+                    .is_none()
+                    {
+                        commands.entity(entity).remove::<Stuck>();
+
+                        // Apply translation to unstuck.
+                        transform.translation += dir.extend(0.);
+
+                        break 'outer;
+                    }
+                }
+
+                i += 1;
+            }
+        }
+    }
+}

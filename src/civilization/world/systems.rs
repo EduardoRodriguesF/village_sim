@@ -55,6 +55,7 @@ pub fn populate(
     q_npcs: Query<With<NpcStats>>,
     q_entrances: Query<(&HeadlessTransform, &Activity), With<Entrance>>,
 ) {
+    const PADDING: f32 = 4.;
     let population = q_npcs.iter().len() as u16;
     let entrances = q_entrances
         .iter()
@@ -75,8 +76,8 @@ pub fn populate(
 
         let pos = pos.0.translation
             + Vec3::new(
-                seed.rng.gen_range(0.0..entrance.area.width()),
-                seed.rng.gen_range(0.0..entrance.area.height()),
+                seed.rng.gen_range(PADDING..entrance.area.width() - PADDING),
+                seed.rng.gen_range(PADDING..entrance.area.height() - PADDING),
                 0.,
             );
 
@@ -122,6 +123,7 @@ pub fn create_walls(mut commands: Commands, map: Res<Map>) {
                         row_idx as f32 * 16.,
                         1.,
                     )),
+                    Collider::new(Vec2::splat(16.), bevy::sprite::Anchor::Center),
                 ));
             }
         }
