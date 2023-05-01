@@ -9,11 +9,13 @@ pub struct ActivitiesPlugin;
 
 impl Plugin for ActivitiesPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(react)
-            .add_system(have_reaction)
-            .add_system(apply_activity_plan)
-            .add_system(search_activity)
-            .add_system(do_activity)
-            .add_system(follow_routine);
+        app.add_systems((
+            react,
+            have_reaction,
+            apply_activity_plan,
+            search_activity,
+            do_activity,
+            follow_routine,
+        ));
     }
 }
