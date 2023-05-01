@@ -22,10 +22,10 @@ impl Plugin for CursorPlugin {
 /// Updates `Cursor` position values.
 fn update_cursor_position(
     mut cursor: ResMut<Cursor>,
-    windows: Res<Windows>,
+    q_windows: Query<&Window>,
     q_camera: Query<&Transform, With<Camera>>,
 ) {
-    if let Some(cursor_pos) = windows.get_primary().unwrap().cursor_position() {
+    if let Some(cursor_pos) = q_windows.get_single().unwrap().cursor_position() {
         cursor.position = Some(cursor_pos);
 
         cursor.relative_position = match q_camera.get_single() {
