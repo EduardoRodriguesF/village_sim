@@ -15,17 +15,17 @@ pub struct CursorPlugin;
 impl Plugin for CursorPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<Cursor>()
-            .add_system_to_stage(CoreStage::First, update_cursor_position);
+            .add_system(update_cursor_position.in_base_set(CoreSet::First));
     }
 }
 
 /// Updates `Cursor` position values.
 fn update_cursor_position(
     mut cursor: ResMut<Cursor>,
-    windows: Res<Windows>,
+    q_windows: Query<&Window>,
     q_camera: Query<&Transform, With<Camera>>,
 ) {
-    if let Some(cursor_pos) = windows.get_primary().unwrap().cursor_position() {
+    if let Some(cursor_pos) = q_windows.get_single().unwrap().cursor_position() {
         cursor.position = Some(cursor_pos);
 
         cursor.relative_position = match q_camera.get_single() {

@@ -14,7 +14,7 @@ impl Plugin for HeadlessPositionPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<PixelScale>()
             .init_resource::<TargetScale>()
-            .add_system_to_stage(CoreStage::PostUpdate, translate_transform)
+            .add_system(translate_transform.in_base_set(CoreSet::PostUpdate))
             .add_system(transition_scale);
 
         if cfg!(debug_assertions) {
